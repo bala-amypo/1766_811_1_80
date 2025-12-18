@@ -45,69 +45,37 @@ public class AcademicEvent {
         submittedAt = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
+    // ✅ GETTERS & SETTERS
 
-    public Long getBranchId() {
-        return branchId;
-    }
+    public Long getId() { return id; }
+    public Long getBranchId() { return branchId; }
+    public void setBranchId(Long branchId) { this.branchId = branchId; }
 
-    public void setBranchId(Long branchId) {
-        this.branchId = branchId;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getEventType() { return eventType; }
+    public void setEventType(String eventType) { this.eventType = eventType; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
+    public LocalDate getStartDate() { return startDate; }
     public void setStartDate(LocalDate startDate) {
         if (startDate.isAfter(this.endDate)) {
-            throw new ValidationException("Invalid start date");
+            throw new ValidationException("Invalid date range");
         }
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
+    public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) {
         if (this.startDate != null && endDate.isBefore(this.startDate)) {
-            throw new ValidationException("Invalid end date");
+            throw new ValidationException("Invalid date range");
         }
         this.endDate = endDate;
     }
 
-    public String getLocation() {
-        return location;
-    }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }
