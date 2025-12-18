@@ -25,7 +25,7 @@ public class EventMergeRecord {
         createdAt = LocalDateTime.now();
     }
 
-    // ✅ GETTERS & SETTERS
+
 
     public Long getId() { return id; }
 
