@@ -5,6 +5,7 @@ import com.example.demo.repository.ClashRecordRepository;
 import com.example.demo.service.ClashDetectionService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,30 +18,36 @@ public class ClashDetectionServiceImpl implements ClashDetectionService {
     }
 
     @Override
-    public ClashRecord logClash(ClashRecord clash) {
-        return repository.save(clash);
-    }
-
-    @Override
-    public ClashRecord resolveClash(Long clashId) {
-        ClashRecord clash = repository.findById(clashId).orElseThrow();
-        clash.setResolved(true);
-        return repository.save(clash);
-    }
-
-    @Override
     public List<ClashRecord> getClashesForEvent(Long eventId) {
-        return List<ClashRecord> findByEventAIdOrEventBId(Long eventAId, Long eventBId);
-
+        // Fetch clashes where event appears as either A or B
+        return repository.findByEventAIdOrEventBId(eventId, eventId);
     }
 
     @Override
-    public List<ClashRecord> getUnresolvedClashes() {
-        return repository.findByResolvedFalse();
+    public ClashRecord saveClash(Long eventAId,
+                                 Long eventBId,
+                                 String clashType,
+                                 String severity,
+                                 String details) {
+
+        ClashRecord record = new ClashRecord();
+        record.setEventAId(eventAId);
+        record.setEventBId(eventBId);
+        record.setClashType(clashType);
+        record.setSeverity(severity);
+        record.setDetails(details);
+        record.setResolved(false);
+        record.setDetectedAt(LocalDateTime.now());
+
+        return repository.save(record);
     }
 
     @Override
-    public List<ClashRecord> getAllClashes() {
-        return repository.findAll();
+    public ClashRecord markResolved(Long clashId) {
+        ClashRecord record = repository.findById(clashId)
+                .orElseThrow(() -> new RuntimeException("Clash not found"));
+
+        record.setResolved(true);
+        return repository.save(record);
     }
 }
