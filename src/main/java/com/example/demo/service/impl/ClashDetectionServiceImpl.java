@@ -13,7 +13,7 @@ public class ClashDetectionServiceImpl implements ClashDetectionService{
 
     private final ClashRecordRepository repository;
 
-    public ClashRecordServiceImpl(ClashRecordRepository repository) {
+    public ClashDetectionServiceImpl(ClashRecordRepository repository) {
         this.repository = repository;
     }
 
