@@ -4,26 +4,45 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.EventMergeRecord;
-import com.example.demo.repository.EventMergeRecordRepository;
-import com.example.demo.service.EventMergeService;
+import com.example.demo.entity.ClashRecord;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.ClashRecordRepository;
+import com.example.demo.service.ClashDetectionService;
 
 @Service
-public class EventMergeServiceImpl implements EventMergeService {
+public class ClashDetectionServiceImpl implements ClashDetectionService {
 
-    private final EventMergeRecordRepository repository;
+    private final ClashRecordRepository clashRecordRepository;
 
-    public EventMergeServiceImpl(EventMergeRecordRepository repository) {
-        this.repository = repository;
+    public ClashDetectionServiceImpl(ClashRecordRepository clashRecordRepository) {
+        this.clashRecordRepository = clashRecordRepository;
     }
 
     @Override
-    public EventMergeRecord save(EventMergeRecord record) {
-        return repository.save(record);
+    public ClashRecord logClash(ClashRecord clash) {
+        return clashRecordRepository.save(clash);
     }
 
     @Override
-    public List<EventMergeRecord> getAll() {
-        return repository.findAll();
+    public List<ClashRecord> getClashesForEvent(Long eventId) {
+        return clashRecordRepository.findByEventAIdOrEventBId(eventId, eventId);
+    }
+
+    @Override
+    public ClashRecord resolveClash(Long clashId) {
+        ClashRecord clash = clashRecordRepository.findById(clashId)
+                .orElseThrow(() -> new ResourceNotFoundException("Clash not found"));
+        clash.setResolved(true);
+        return clashRecordRepository.save(clash);
+    }
+
+    @Override
+    public List<ClashRecord> getUnresolvedClashes() {
+        return clashRecordRepository.findByResolvedFalse();
+    }
+
+    @Override
+    public List<ClashRecord> getAllClashes() {
+        return clashRecordRepository.findAll();
     }
 }
