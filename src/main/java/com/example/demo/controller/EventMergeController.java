@@ -6,25 +6,26 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.entity.EventMergeRecord;
-import com.example.demo.service.EventMergeRecordService;
+import com.example.demo.service.EventMergeService;
 
 @RestController
 @RequestMapping("/api/merge-records")
 public class EventMergeController {
 
-    private final EventMergeRecordService eventMergeRecordService;
+    private final EventMergeService eventMergeService;
 
-    public EventMergeRecordController(EventMergeRecordService eventMergeRecordService) {
-        this.eventMergeRecordService = eventMergeRecordService;
+    public EventMergeController(EventMergeService eventMergeService) {
+        this.eventMergeService = eventMergeService;
     }
 
     @PostMapping
-    public EventMergeRecord createMergeRecord(@Valid @RequestBody EventMergeRecord record) {
-        return eventMergeRecordService.save(record);
+    public EventMergeRecord createMergeRecord(
+            @Valid @RequestBody EventMergeRecord record) {
+        return eventMergeService.save(record);
     }
 
     @GetMapping
     public List<EventMergeRecord> getAllMergeRecords() {
-        return eventMergeRecordService.getAll();
+        return eventMergeService.getAll();
     }
 }
