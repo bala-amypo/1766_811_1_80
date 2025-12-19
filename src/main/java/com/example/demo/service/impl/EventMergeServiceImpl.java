@@ -23,7 +23,7 @@ public class EventMergeServiceImpl implements EventMergeService {
         EventMergeRecord record = new EventMergeRecord();
         record.setSourceEventIds(eventIds.toString());
         record.setMergeReason(reason);
-        record.setMergeTitle("Merged Events");
+        record.setMergedTitle("Merged Events");
 
         return repository.save(record);
     }
