@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.example.demo.entity.ClashRecord;
 
-public interface ClashRecordService {
+public interface ClashDetectionService{
+
     ClashRecord save(ClashRecord clash);
     List<ClashRecord> getAll();
 }

@@ -9,7 +9,7 @@ import com.example.demo.repository.ClashRecordRepository;
 import com.example.demo.service.ClashRecordService;
 
 @Service
-public class ClashRecordServiceImpl implements ClashRecordService {
+public class ClashDetectionServiceImpl implements ClashDetectionService{
 
     private final ClashRecordRepository repository;
 
