@@ -1,13 +1,8 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "branch_profiles")
@@ -17,20 +12,28 @@ public class BranchProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Branch code is required")
+    @NotBlank(message = "Branch code required")
     @Column(unique = true)
     private String branchCode;
 
-    @NotBlank(message = "Branch name is required")
+    @NotBlank(message = "Branch name required")
     private String branchName;
 
-    @Email
+    @Email(message = "Invalid email")
     private String contactEmail;
 
-    private boolean active = true;
+    private Boolean active;
+    private LocalDateTime lastSyncAt;
 
     public BranchProfile() {}
 
+    @PrePersist
+    public void onCreate() {
+        this.lastSyncAt = LocalDateTime.now();
+        if (active == null) active = true;
+    }
+
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -43,6 +46,6 @@ public class BranchProfile {
     public String getContactEmail() { return contactEmail; }
     public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
 
-    public boolean isActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 }

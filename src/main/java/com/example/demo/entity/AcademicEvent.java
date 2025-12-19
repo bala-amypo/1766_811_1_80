@@ -1,14 +1,9 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "academic_events")
@@ -18,23 +13,33 @@ public class AcademicEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Branch ID is required")
+    @NotNull(message = "Branch ID required")
     private Long branchId;
 
-    @NotBlank(message = "Title is required")
+    @NotBlank(message = "Title required")
     private String title;
 
-    @NotBlank(message = "Event type is required")
+    @NotBlank(message = "Event type required")
     private String eventType;
 
-    @NotNull(message = "Start date is required")
+    @NotNull(message = "Start date required")
     private LocalDate startDate;
 
-    @NotNull(message = "End date is required")
+    @NotNull(message = "End date required")
     private LocalDate endDate;
+
+    private String location;
+    private String description;
+    private LocalDateTime submittedAt;
 
     public AcademicEvent() {}
 
+    @PrePersist
+    public void onCreate() {
+        this.submittedAt = LocalDateTime.now();
+    }
+
+    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
