@@ -1,12 +1,11 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.example.demo.entity.UserAccount;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
@@ -17,13 +16,15 @@ public class UserAccountServiceImpl implements UserAccountService {
         this.repository = repository;
     }
 
-    @Override
     public UserAccount save(UserAccount user) {
         return repository.save(user);
     }
 
-    @Override
     public List<UserAccount> getAll() {
         return repository.findAll();
+    }
+
+    public UserAccount getById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 }

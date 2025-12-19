@@ -1,11 +1,11 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-import org.springframework.stereotype.Service;
-
 import com.example.demo.entity.BranchProfile;
 import com.example.demo.repository.BranchProfileRepository;
 import com.example.demo.service.BranchProfileService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BranchProfileServiceImpl implements BranchProfileService {
@@ -16,13 +16,15 @@ public class BranchProfileServiceImpl implements BranchProfileService {
         this.repository = repository;
     }
 
-    @Override
     public BranchProfile save(BranchProfile branch) {
         return repository.save(branch);
     }
 
-    @Override
     public List<BranchProfile> getAll() {
         return repository.findAll();
+    }
+
+    public BranchProfile getById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 }

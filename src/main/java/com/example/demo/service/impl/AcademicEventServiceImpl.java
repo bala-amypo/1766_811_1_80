@@ -1,12 +1,11 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.example.demo.entity.AcademicEvent;
 import com.example.demo.repository.AcademicEventRepository;
 import com.example.demo.service.AcademicEventService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AcademicEventServiceImpl implements AcademicEventService {
@@ -17,13 +16,15 @@ public class AcademicEventServiceImpl implements AcademicEventService {
         this.repository = repository;
     }
 
-    @Override
     public AcademicEvent save(AcademicEvent event) {
         return repository.save(event);
     }
 
-    @Override
     public List<AcademicEvent> getAll() {
         return repository.findAll();
+    }
+
+    public AcademicEvent getById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 }
