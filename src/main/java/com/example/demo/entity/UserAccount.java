@@ -15,19 +15,19 @@ public class UserAccount {
     @NotBlank(message = "Full name is required")
     private String fullName;
 
-    @Email(message = "Invalid email")
+    @Email
     @NotBlank(message = "Email is required")
     @Column(unique = true)
     private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @NotBlank
+    @Size(min = 6)
     private String password;
 
-    @NotBlank(message = "Role is required")
+    @NotBlank
     private String role;
 
-    @NotBlank(message = "Department is required")
+    @NotBlank
     private String department;
 
     private LocalDateTime createdAt;
@@ -39,7 +39,6 @@ public class UserAccount {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -57,4 +56,6 @@ public class UserAccount {
 
     public String getDepartment() { return department; }
     public void setDepartment(String department) { this.department = department; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }

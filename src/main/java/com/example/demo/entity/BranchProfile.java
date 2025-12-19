@@ -12,14 +12,14 @@ public class BranchProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Branch code required")
+    @NotBlank
     @Column(unique = true)
     private String branchCode;
 
-    @NotBlank(message = "Branch name required")
+    @NotBlank
     private String branchName;
 
-    @Email(message = "Invalid email")
+    @Email
     private String contactEmail;
 
     private Boolean active;
@@ -33,7 +33,6 @@ public class BranchProfile {
         if (active == null) active = true;
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -48,4 +47,6 @@ public class BranchProfile {
 
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
+
+    public LocalDateTime getLastSyncAt() { return lastSyncAt; }
 }

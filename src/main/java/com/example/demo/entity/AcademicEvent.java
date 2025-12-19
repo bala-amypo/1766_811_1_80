@@ -13,19 +13,19 @@ public class AcademicEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Branch ID required")
+    @NotNull
     private Long branchId;
 
-    @NotBlank(message = "Title required")
+    @NotBlank
     private String title;
 
-    @NotBlank(message = "Event type required")
+    @NotBlank
     private String eventType;
 
-    @NotNull(message = "Start date required")
+    @NotNull
     private LocalDate startDate;
 
-    @NotNull(message = "End date required")
+    @NotNull
     private LocalDate endDate;
 
     private String location;
@@ -36,10 +36,9 @@ public class AcademicEvent {
 
     @PrePersist
     public void onCreate() {
-        this.submittedAt = LocalDateTime.now();
+        submittedAt = LocalDateTime.now();
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -57,4 +56,12 @@ public class AcademicEvent {
 
     public LocalDate getEndDate() { return endDate; }
     public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public LocalDateTime getSubmittedAt() { return submittedAt; }
 }
