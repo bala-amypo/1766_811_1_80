@@ -10,7 +10,7 @@ import com.example.demo.service.EventMergeRecordService;
 
 @RestController
 @RequestMapping("/api/merge-records")
-public class EventMergeRecordController {
+public class EventMergeController {
 
     private final EventMergeRecordService eventMergeRecordService;
 
