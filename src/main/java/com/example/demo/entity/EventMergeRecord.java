@@ -1,11 +1,9 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "event_merge_records")
@@ -15,25 +13,25 @@ public class EventMergeRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Source event IDs required")
+    @NotBlank
     private String sourceEventIds;
 
-    @NotBlank(message = "Merged title required")
+    @NotBlank
     private String mergedTitle;
 
+    @NotNull
+    private LocalDate mergedStartDate;
+
+    @NotNull
+    private LocalDate mergedEndDate;
+
     private String mergeReason;
+    private LocalDateTime createdAt;
 
-    public EventMergeRecord() {}
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getSourceEventIds() { return sourceEventIds; }
-    public void setSourceEventIds(String sourceEventIds) { this.sourceEventIds = sourceEventIds; }
-
-    public String getMergedTitle() { return mergedTitle; }
-    public void setMergedTitle(String mergedTitle) { this.mergedTitle = mergedTitle; }
-
-    public String getMergeReason() { return mergeReason; }
-    public void setMergeReason(String mergeReason) { this.mergeReason = mergeReason; }
+    // Getters & Setters
 }
