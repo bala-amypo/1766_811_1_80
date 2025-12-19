@@ -1,30 +1,29 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
+import com.example.demo.entity.AcademicEvent;
+import com.example.demo.service.AcademicEventService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.entity.AcademicEvent;
-import com.example.demo.service.AcademicEventService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
 public class AcademicEventController {
 
-    private final AcademicEventService academicEventService;
+    private final AcademicEventService service;
 
-    public AcademicEventController(AcademicEventService academicEventService) {
-        this.academicEventService = academicEventService;
+    public AcademicEventController(AcademicEventService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public AcademicEvent createEvent(@Valid @RequestBody AcademicEvent event) {
-        return academicEventService.save(event);
+    public AcademicEvent create(@Valid @RequestBody AcademicEvent event) {
+        return service.save(event);
     }
 
     @GetMapping
-    public List<AcademicEvent> getAllEvents() {
-        return academicEventService.getAll();
+    public List<AcademicEvent> getAll() {
+        return service.getAll();
     }
 }

@@ -1,30 +1,29 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
+import com.example.demo.entity.UserAccount;
+import com.example.demo.service.UserAccountService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.entity.UserAccount;
-import com.example.demo.service.UserAccountService;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/auth/users")
 public class UserAccountController {
 
-    private final UserAccountService userAccountService;
+    private final UserAccountService service;
 
-    public UserAccountController(UserAccountService userAccountService) {
-        this.userAccountService = userAccountService;
+    public UserAccountController(UserAccountService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public UserAccount createUser(@Valid @RequestBody UserAccount user) {
-        return userAccountService.save(user);
+    public UserAccount create(@Valid @RequestBody UserAccount user) {
+        return service.save(user);
     }
 
     @GetMapping
-    public List<UserAccount> getAllUsers() {
-        return userAccountService.getAll();
+    public List<UserAccount> getAll() {
+        return service.getAll();
     }
 }

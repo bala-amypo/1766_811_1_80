@@ -1,35 +1,29 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.demo.entity.BranchProfile;
 import com.example.demo.service.BranchProfileService;
-
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/branches")
 public class BranchProfileController {
 
-    private final BranchProfileService branchProfileService;
+    private final BranchProfileService service;
 
-    public BranchProfileController(BranchProfileService branchProfileService) {
-        this.branchProfileService = branchProfileService;
+    public BranchProfileController(BranchProfileService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public BranchProfile createBranch(@Valid @RequestBody BranchProfile branch) {
-        return branchProfileService.save(branch);
+    public BranchProfile create(@Valid @RequestBody BranchProfile branch) {
+        return service.save(branch);
     }
 
     @GetMapping
-    public List<BranchProfile> getAllBranches() {
-        return branchProfileService.getAll();
+    public List<BranchProfile> getAll() {
+        return service.getAll();
     }
 }

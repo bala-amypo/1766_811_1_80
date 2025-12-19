@@ -1,31 +1,29 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
+import com.example.demo.entity.EventMergeRecord;
+import com.example.demo.service.EventMergeService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.entity.EventMergeRecord;
-import com.example.demo.service.EventMergeService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/merge-records")
 public class EventMergeController {
 
-    private final EventMergeService eventMergeService;
+    private final EventMergeService service;
 
-    public EventMergeController(EventMergeService eventMergeService) {
-        this.eventMergeService = eventMergeService;
+    public EventMergeController(EventMergeService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public EventMergeRecord createMergeRecord(
-            @Valid @RequestBody EventMergeRecord record) {
-        return eventMergeService.save(record);
+    public EventMergeRecord create(@Valid @RequestBody EventMergeRecord record) {
+        return service.save(record);
     }
 
     @GetMapping
-    public List<EventMergeRecord> getAllMergeRecords() {
-        return eventMergeService.getAll();
+    public List<EventMergeRecord> getAll() {
+        return service.getAll();
     }
 }

@@ -1,37 +1,30 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.EventMergeRecord;
+import com.example.demo.repository.EventMergeRecordRepository;
 import com.example.demo.service.EventMergeService;
-import com.example.demo.model.EventMerge;
-import com.example.demo.repository.EventMergeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EventMergeServiceImpl implements EventMergeService {
 
-    @Autowired
-    private EventMergeRepository eventMergeRepository;
+    private final EventMergeRecordRepository repository;
 
-    @Override
-    public EventMerge saveEventMerge(EventMerge eventMerge) {
-        return eventMergeRepository.save(eventMerge);
+    public EventMergeServiceImpl(EventMergeRecordRepository repository) {
+        this.repository = repository;
     }
 
-    @Override
-    public List<EventMerge> getAllEventMerges() {
-        return eventMergeRepository.findAll();
+    public EventMergeRecord save(EventMergeRecord record) {
+        return repository.save(record);
     }
 
-    @Override
-    public Optional<EventMerge> getEventMergeById(Long id) {
-        return eventMergeRepository.findById(id);
+    public List<EventMergeRecord> getAll() {
+        return repository.findAll();
     }
 
-    @Override
-    public void deleteEventMerge(Long id) {
-        eventMergeRepository.deleteById(id);
+    public EventMergeRecord getById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 }
