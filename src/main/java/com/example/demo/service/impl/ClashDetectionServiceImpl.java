@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.ClashRecord;
 import com.example.demo.repository.ClashRecordRepository;
-import com.example.demo.service.ClashRecordService;
+import com.example.demo.service.ClashDetectionService;
 
 @Service
 public class ClashDetectionServiceImpl implements ClashDetectionService{
