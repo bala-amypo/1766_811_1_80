@@ -5,6 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClashRecordRepository
-        extends JpaRepository<ClashRecord, Long> {
+public interface ClashRecordRepository extends JpaRepository<ClashRecord, Long> {
 }
