@@ -16,15 +16,35 @@ public class BranchProfileServiceImpl implements BranchProfileService {
         this.repository = repository;
     }
 
-    public BranchProfile save(BranchProfile branch) {
+    @Override
+    public BranchProfile createBranch(BranchProfile branch) {
         return repository.save(branch);
     }
 
-    public List<BranchProfile> getAll() {
+    @Override
+    public BranchProfile updateBranchStatus(Long id, boolean active) {
+        BranchProfile branch = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
+
+        branch.setActive(active);
+        return repository.save(branch);
+    }
+
+    @Override
+    public BranchProfile getBranchById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
+    }
+
+    @Override
+    public List<BranchProfile> getAllBranches() {
         return repository.findAll();
     }
 
-    public BranchProfile getById(Long id) {
-        return repository.findById(id).orElse(null);
+    @Override
+    public BranchProfile getByBranchCode(String branchCode) {
+        return repository.findByBranchCode(branchCode)
+                .orElseThrow(() -> new RuntimeException(
+                        "Branch not found with code: " + branchCode));
     }
 }
