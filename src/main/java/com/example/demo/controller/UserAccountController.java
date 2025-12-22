@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/auth/users")
+@RequestMapping("/api/users")
 public class UserAccountController {
 
     private final UserAccountService service;
@@ -20,6 +20,11 @@ public class UserAccountController {
     @PostMapping
     public UserAccount create(@Valid @RequestBody UserAccount user) {
         return service.save(user);
+    }
+
+    @GetMapping("/{id}")
+    public UserAccount getById(@PathVariable Long id) {
+        return service.getById(id);
     }
 
     @GetMapping

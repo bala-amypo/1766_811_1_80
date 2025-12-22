@@ -16,15 +16,20 @@ public class UserAccountServiceImpl implements UserAccountService {
         this.repository = repository;
     }
 
+    @Override
     public UserAccount save(UserAccount user) {
         return repository.save(user);
     }
 
-    public List<UserAccount> getAll() {
-        return repository.findAll();
+    @Override
+    public UserAccount getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found with id: " + id));
     }
 
-    public UserAccount getById(Long id) {
-        return repository.findById(id).orElse(null);
+    @Override
+    public List<UserAccount> getAll() {
+        return repository.findAll();
     }
 }
