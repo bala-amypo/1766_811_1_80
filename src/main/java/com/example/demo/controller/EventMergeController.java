@@ -21,7 +21,7 @@ public class EventMergeController {
     }
 
     @PostMapping
-    public EventMergeRecord merge(@Valid @RequestBody EventMergeRecord record) {
+    public EventMergeRecord create(@Valid @RequestBody EventMergeRecord record) {
         return service.save(record);
     }
 

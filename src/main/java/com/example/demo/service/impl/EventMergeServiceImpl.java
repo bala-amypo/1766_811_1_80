@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.EventMergeRecord;
-import com.example.demo.repository.EventMergeRepository;
+import com.example.demo.repository.EventMergeRecordRepository;
 import com.example.demo.service.EventMergeService;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 @Service
 public class EventMergeServiceImpl implements EventMergeService {
 
-    private final EventMergeRepository repository;
+    private final EventMergeRecordRepository repository;
 
-    public EventMergeServiceImpl(EventMergeRepository repository) {
+    public EventMergeServiceImpl(EventMergeRecordRepository repository) {
         this.repository = repository;
     }
 
@@ -27,7 +27,7 @@ public class EventMergeServiceImpl implements EventMergeService {
     public EventMergeRecord getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Merge record not found with id: " + id));
+                        new RuntimeException("Event merge record not found with id: " + id));
     }
 
     @Override
