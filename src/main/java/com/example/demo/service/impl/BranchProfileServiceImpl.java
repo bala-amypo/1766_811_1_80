@@ -43,8 +43,11 @@ public class BranchProfileServiceImpl implements BranchProfileService {
 
     @Override
     public BranchProfile getByBranchCode(String branchCode) {
-        return repository.findByBranchCode(branchCode)
-                .orElseThrow(() -> new RuntimeException(
-                        "Branch not found with code: " + branchCode));
+        return repository.findAll()
+                .stream()
+                .filter(b -> branchCode.equals(b.getBranchCode()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new RuntimeException("Branch not found with code: " + branchCode));
     }
 }
