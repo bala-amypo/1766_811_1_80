@@ -2,13 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.BranchProfile;
 import com.example.demo.service.BranchProfileService;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/branches")
+@Tag(name = "Branch Profiles")
 public class BranchProfileController {
 
     private final BranchProfileService service;
@@ -18,12 +19,29 @@ public class BranchProfileController {
     }
 
     @PostMapping
-    public BranchProfile create(@Valid @RequestBody BranchProfile branch) {
-        return service.save(branch);
+    public BranchProfile createBranch(@RequestBody BranchProfile branch) {
+        return service.createBranch(branch);
+    }
+
+    @PutMapping("/{id}/status")
+    public BranchProfile updateBranchStatus(
+            @PathVariable Long id,
+            @RequestParam boolean active) {
+        return service.updateBranchStatus(id, active);
+    }
+
+    @GetMapping("/{id}")
+    public BranchProfile getBranchById(@PathVariable Long id) {
+        return service.getBranchById(id);
     }
 
     @GetMapping
-    public List<BranchProfile> getAll() {
-        return service.getAll();
+    public List<BranchProfile> getAllBranches() {
+        return service.getAllBranches();
+    }
+
+    @GetMapping("/lookup/{branchCode}")
+    public BranchProfile getByBranchCode(@PathVariable String branchCode) {
+        return service.getByBranchCode(branchCode);
     }
 }
