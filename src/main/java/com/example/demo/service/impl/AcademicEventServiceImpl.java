@@ -18,12 +18,12 @@ public class AcademicEventServiceImpl implements AcademicEventService {
     }
 
     @Override
-    public AcademicEvent createEvent(AcademicEvent event) {
+    public AcademicEvent save(AcademicEvent event) {
         return repository.save(event);
     }
 
     @Override
-    public AcademicEvent updateEvent(Long id, AcademicEvent event) {
+    public AcademicEvent update(Long id, AcademicEvent event) {
         AcademicEvent existing = repository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("AcademicEvent not found with id: " + id));
@@ -38,19 +38,19 @@ public class AcademicEventServiceImpl implements AcademicEventService {
     }
 
     @Override
-    public AcademicEvent getEventById(Long id) {
+    public AcademicEvent getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("AcademicEvent not found with id: " + id));
     }
 
     @Override
-    public List<AcademicEvent> getAllEvents() {
+    public List<AcademicEvent> getAll() {
         return repository.findAll();
     }
 
     @Override
-    public List<AcademicEvent> getEventsByBranch(Long branchId) {
+    public List<AcademicEvent> getByBranch(Long branchId) {
         return repository.findAll()
                 .stream()
                 .filter(e -> branchId.equals(e.getBranchId()))
