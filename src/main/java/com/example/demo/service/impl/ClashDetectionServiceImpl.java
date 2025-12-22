@@ -1,30 +1,49 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.AcademicEvent;
 import com.example.demo.entity.ClashRecord;
-import com.example.demo.repository.ClashRecordRepository;
 import com.example.demo.service.ClashDetectionService;
+import com.example.demo.service.ClashRecordService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ClashDetectionServiceImpl implements ClashDetectionService {
 
-    private final ClashRecordRepository repository;
+    private final ClashRecordService clashRecordService;
 
-    public ClashDetectionServiceImpl(ClashRecordRepository repository) {
-        this.repository = repository;
+    public ClashDetectionServiceImpl(ClashRecordService clashRecordService) {
+        this.clashRecordService = clashRecordService;
     }
 
-    public ClashRecord save(ClashRecord clash) {
-        return repository.save(clash);
+    @Override
+    public List<ClashRecord> detectClashes(List<AcademicEvent> events) {
+
+        List<ClashRecord> clashes = new ArrayList<>();
+
+        for (int i = 0; i < events.size(); i++) {
+            for (int j = i + 1; j < events.size(); j++) {
+
+                AcademicEvent e1 = events.get(i);
+                AcademicEvent e2 = events.get(j);
+
+                if (isClashing(e1, e2)) {
+                    ClashRecord record = new ClashRecord();
+                    record.setEventOneId(e1.getId());
+                    record.setEventTwoId(e2.getId());
+                    record.setReason("Date overlap detected");
+
+                    clashes.add(clashRecordService.save(record));
+                }
+            }
+        }
+        return clashes;
     }
 
-    public List<ClashRecord> getAll() {
-        return repository.findAll();
-    }
-
-    public ClashRecord getById(Long id) {
-        return repository.findById(id).orElse(null);
+    private boolean isClashing(AcademicEvent e1, AcademicEvent e2) {
+        return !e1.getEndDate().isBefore(e2.getStartDate())
+                && !e2.getEndDate().isBefore(e1.getStartDate());
     }
 }
