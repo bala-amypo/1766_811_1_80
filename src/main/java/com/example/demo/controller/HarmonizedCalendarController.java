@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/harmonized-calendars")
+@RequestMapping("/api/calendars")
 public class HarmonizedCalendarController {
 
     private final HarmonizedCalendarService service;
@@ -22,8 +22,24 @@ public class HarmonizedCalendarController {
         return service.save(calendar);
     }
 
+    @PutMapping("/{id}")
+    public HarmonizedCalendar update(@PathVariable Long id,
+                                     @Valid @RequestBody HarmonizedCalendar calendar) {
+        return service.update(id, calendar);
+    }
+
+    @GetMapping("/{id}")
+    public HarmonizedCalendar getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
     @GetMapping
     public List<HarmonizedCalendar> getAll() {
         return service.getAll();
+    }
+
+    @GetMapping("/branch/{branchId}")
+    public List<HarmonizedCalendar> getByBranch(@PathVariable Long branchId) {
+        return service.getByBranch(branchId);
     }
 }
