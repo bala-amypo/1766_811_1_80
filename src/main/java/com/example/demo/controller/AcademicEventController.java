@@ -1,4 +1,4 @@
-/*package com.example.demo.controller;
+package com.example.demo.controller;
 
 import com.example.demo.entity.AcademicEvent;
 import com.example.demo.service.AcademicEventService;
@@ -50,4 +50,4 @@ public class AcademicEventController {
         return service.findByIds(List.of());
     }
 }
-*/
+

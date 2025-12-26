@@ -1,4 +1,4 @@
-/*package com.example.demo.controller;
+package com.example.demo.controller;
 
 import com.example.demo.entity.BranchProfile;
 import com.example.demo.service.BranchProfileService;
@@ -56,4 +56,4 @@ public class BranchProfileController {
                 .orElseThrow();
     }
 }
-*/
+

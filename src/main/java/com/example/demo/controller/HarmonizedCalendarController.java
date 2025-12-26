@@ -43,4 +43,3 @@ public class HarmonizedCalendarController {
         return service.findActive(date);
     }
 }
-*/
