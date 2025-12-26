@@ -1,30 +1,25 @@
 package com.example.demo.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 public class MergeEventsRequest {
 
+    @NotEmpty(message = "Event IDs cannot be empty")
     private List<Long> eventIds;
-    private String mergedTitle;
-    private String mergeReason;
 
     public MergeEventsRequest() {}
 
-    public MergeEventsRequest(List<Long> eventIds, String mergedTitle, String mergeReason) {
+    public MergeEventsRequest(List<Long> eventIds) {
         this.eventIds = eventIds;
-        this.mergedTitle = mergedTitle;
-        this.mergeReason = mergeReason;
     }
 
+    // Getters & Setters
     public List<Long> getEventIds() {
         return eventIds;
     }
 
-    public String getMergedTitle() {
-        return mergedTitle;
-    }
-
-    public String getMergeReason() {
-        return mergeReason;
+    public void setEventIds(List<Long> eventIds) {
+        this.eventIds = eventIds;
     }
 }

@@ -3,26 +3,28 @@ package com.example.demo.dto;
 public class JwtResponse {
 
     private String token;
-    private String email;
-    private String role;
+    private String type = "Bearer";
 
     public JwtResponse() {}
 
-    public JwtResponse(String token, String email, String role) {
+    public JwtResponse(String token) {
         this.token = token;
-        this.email = email;
-        this.role = role;
     }
 
+    // Getters & Setters
     public String getToken() {
         return token;
     }
 
-    public String getEmail() {
-        return email;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public String getRole() {
-        return role;
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
