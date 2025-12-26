@@ -1,48 +1,37 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.UserAccount;
+import com.example.demo.security.CustomUserDetailsService;
 import com.example.demo.security.JwtUtil;
-import com.example.demo.service.UserAccountService;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Authentication")
 public class UserAccountController {
 
-    private final UserAccountService service;
+    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService userDetailsService;
 
-    public UserAccountController(UserAccountService service,
-                                 JwtUtil jwtUtil) {
-        this.service = service;
+    public UserAccountController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
+                                 CustomUserDetailsService userDetailsService) {
+        this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
     }
 
-    // POST /auth/register
-    @PostMapping("/register")
-    public UserAccount register(@RequestBody UserAccount user) {
-        return service.register(user);
-    }
-
-    // POST /auth/login
     @PostMapping("/login")
-    public String login(@RequestBody UserAccount user) {
-        return jwtUtil.generateTokenForUser(user);
-    }
+    public String login(@RequestParam String username, @RequestParam String password) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
+            );
+        } catch (AuthenticationException e) {
+            throw new RuntimeException("Invalid credentials");
+        }
 
-    // GET /auth/users
-    @GetMapping("/users")
-    public List<UserAccount> users() {
-        throw new UnsupportedOperationException("ADMIN only – fetch all users");
-    }
-
-    // GET /auth/users/{id}
-    @GetMapping("/users/{id}")
-    public UserAccount user(@PathVariable Long id) {
-        throw new UnsupportedOperationException("ADMIN only – fetch user by ID");
+        return jwtUtil.generateToken(username);
     }
 }
