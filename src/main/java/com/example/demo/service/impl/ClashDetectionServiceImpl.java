@@ -4,42 +4,48 @@ import com.example.demo.entity.ClashRecord;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ClashRecordRepository;
 import com.example.demo.service.ClashDetectionService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ClashDetectionServiceImpl implements ClashDetectionService {
 
-    private final ClashRecordRepository repository;
+    private final ClashRecordRepository clashRecordRepository;
 
-    public ClashDetectionServiceImpl(ClashRecordRepository repository) {
-        this.repository = repository;
+    public ClashDetectionServiceImpl(ClashRecordRepository clashRecordRepository) {
+        this.clashRecordRepository = clashRecordRepository;
     }
 
     @Override
-    public ClashRecord logClash(ClashRecord clash) {
-        return repository.save(clash);
+    public ClashRecord createClash(ClashRecord clashRecord) {
+        return clashRecordRepository.save(clashRecord);
     }
 
     @Override
-    public List<ClashRecord> getClashesForEvent(Long eventId) {
-        return repository.findByEventId(eventId);
+    public ClashRecord updateClash(Long id, ClashRecord clashRecord) {
+        ClashRecord existing = getClashById(id);
+        existing.setBranchCode(clashRecord.getBranchCode());
+        existing.setEventDate(clashRecord.getEventDate());
+        existing.setEventType(clashRecord.getEventType());
+        existing.setDescription(clashRecord.getDescription());
+        return clashRecordRepository.save(existing);
     }
 
     @Override
-    public ClashRecord resolveClash(Long clashId) {
-        ClashRecord clash = repository.findById(clashId)
-                .orElseThrow(() -> new ResourceNotFoundException("Clash not found"));
-        clash.setResolved(true);
-        return repository.save(clash);
-    }
-
-    @Override
-    public List<ClashRecord> getUnresolvedClashes() {
-        return repository.findByResolvedFalse();
+    public ClashRecord getClashById(Long id) {
+        return clashRecordRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Clash record not found"));
     }
 
     @Override
     public List<ClashRecord> getAllClashes() {
-        return repository.findAll();
+        return clashRecordRepository.findAll();
+    }
+
+    @Override
+    public void deleteClash(Long id) {
+        ClashRecord clash = getClashById(id);
+        clashRecordRepository.delete(clash);
     }
 }
