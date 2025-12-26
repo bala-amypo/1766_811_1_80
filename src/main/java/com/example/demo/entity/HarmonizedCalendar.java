@@ -5,36 +5,27 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "harmonized_calendars")
 public class HarmonizedCalendar {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
     private String title;
-
-    @Column(nullable = false)
     private String generatedBy;
-
     private LocalDateTime generatedAt;
-
-    @Column(nullable = false)
     private LocalDate effectiveFrom;
-
-    @Column(nullable = false)
     private LocalDate effectiveTo;
 
     @Lob
-    private String eventsJson; // JSON array of events
+    private String eventsJson;
 
-    public HarmonizedCalendar() {
-    }
+    public HarmonizedCalendar() {}
 
     public HarmonizedCalendar(Long id, String title, String generatedBy,
-                              LocalDateTime generatedAt, LocalDate effectiveFrom,
-                              LocalDate effectiveTo, String eventsJson) {
+                              LocalDateTime generatedAt,
+                              LocalDate effectiveFrom, LocalDate effectiveTo,
+                              String eventsJson) {
         this.id = id;
         this.title = title;
         this.generatedBy = generatedBy;
@@ -46,30 +37,14 @@ public class HarmonizedCalendar {
 
     @PrePersist
     public void prePersist() {
-        if (generatedAt == null) {
-            generatedAt = LocalDateTime.now();
-        }
+        if (generatedAt == null) generatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
     public String getGeneratedBy() { return generatedBy; }
-    public void setGeneratedBy(String generatedBy) { this.generatedBy = generatedBy; }
-
-    public LocalDateTime getGeneratedAt() { return generatedAt; }
-    public void setGeneratedAt(LocalDateTime generatedAt) { this.generatedAt = generatedAt; }
-
     public LocalDate getEffectiveFrom() { return effectiveFrom; }
-    public void setEffectiveFrom(LocalDate effectiveFrom) { this.effectiveFrom = effectiveFrom; }
-
     public LocalDate getEffectiveTo() { return effectiveTo; }
-    public void setEffectiveTo(LocalDate effectiveTo) { this.effectiveTo = effectiveTo; }
 
-    public String getEventsJson() { return eventsJson; }
-    public void setEventsJson(String eventsJson) { this.eventsJson = eventsJson; }
+    public void setId(Long id) { this.id = id; }
 }
