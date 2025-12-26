@@ -1,35 +1,26 @@
-// ClashRecordServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.ClashRecord;
 import com.example.demo.repository.ClashRecordRepository;
-import com.example.demo.service.ClashRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.demo.service.ClashDetectionService;
 
 import java.util.List;
 
-@Service
-public class ClashRecordServiceImpl implements ClashRecordService {
+public class ClashDetectionServiceImpl implements ClashDetectionService {
 
-    @Autowired
-    private ClashRecordRepository repository;
+    private final ClashRecordRepository repository;
+
+    public ClashDetectionServiceImpl(ClashRecordRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
-    public ClashRecord create(ClashRecord record) { return repository.save(record); }
-
-    @Override
-    public ClashRecord update(Long id, ClashRecord record) {
-        record.setId(id);
+    public ClashRecord save(ClashRecord record) {
         return repository.save(record);
     }
 
     @Override
-    public ClashRecord getById(Long id) { return repository.findById(id).orElse(null); }
-
-    @Override
-    public List<ClashRecord> getAll() { return repository.findAll(); }
-
-    @Override
-    public void delete(Long id) { repository.deleteById(id); }
+    public List<ClashRecord> findUnresolved() {
+        return repository.findByResolvedFalse();
+    }
 }
