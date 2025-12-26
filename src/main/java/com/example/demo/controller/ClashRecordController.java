@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.ClashRecord;
 import com.example.demo.service.ClashDetectionService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,30 +17,27 @@ public class ClashRecordController {
     }
 
     @PostMapping
-    public ResponseEntity<ClashRecord> create(@RequestBody ClashRecord clashRecord) {
-        return ResponseEntity.ok(service.createClash(clashRecord));
+    public ClashRecord create(@RequestBody ClashRecord clash) {
+        return service.logClash(clash);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ClashRecord> update(
-            @PathVariable Long id,
-            @RequestBody ClashRecord clashRecord) {
-        return ResponseEntity.ok(service.updateClash(id, clashRecord));
+    @PutMapping("/{id}/resolve")
+    public ClashRecord resolve(@PathVariable Long id) {
+        return service.resolveClash(id);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ClashRecord> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getClashById(id));
+    @GetMapping("/event/{eventId}")
+    public List<ClashRecord> byEvent(@PathVariable Long eventId) {
+        return service.getClashesForEvent(eventId);
+    }
+
+    @GetMapping("/unresolved")
+    public List<ClashRecord> unresolved() {
+        return service.getUnresolvedClashes();
     }
 
     @GetMapping
-    public ResponseEntity<List<ClashRecord>> getAll() {
-        return ResponseEntity.ok(service.getAllClashes());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.deleteClash(id);
-        return ResponseEntity.noContent().build();
+    public List<ClashRecord> getAll() {
+        return service.getAllClashes();
     }
 }

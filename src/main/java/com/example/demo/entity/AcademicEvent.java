@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -12,11 +13,21 @@ public class AcademicEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private Long branchId;
+
+    @NotBlank
     private String title;
+
+    @NotBlank
     private String eventType;
+
+    @NotNull
     private LocalDate startDate;
+
+    @NotNull
     private LocalDate endDate;
+
     private String location;
     private String description;
     private LocalDateTime submittedAt;
@@ -24,11 +35,10 @@ public class AcademicEvent {
     public AcademicEvent() {}
 
     @PrePersist
-    public void prePersist() {
-        this.submittedAt = LocalDateTime.now();
+    public void onCreate() {
+        submittedAt = LocalDateTime.now();
     }
 
-    // getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

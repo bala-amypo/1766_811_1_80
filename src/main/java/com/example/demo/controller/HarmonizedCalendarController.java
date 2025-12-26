@@ -2,13 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.HarmonizedCalendar;
 import com.example.demo.service.HarmonizedCalendarService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/harmonized-calendars")
+@RequestMapping("/api/calendars")
 public class HarmonizedCalendarController {
 
     private final HarmonizedCalendarService service;
@@ -17,25 +17,29 @@ public class HarmonizedCalendarController {
         this.service = service;
     }
 
-    @PostMapping("/generate")
-    public HarmonizedCalendar generate(@RequestParam String title,
-                                       @RequestParam String generatedBy) {
-        return service.generateHarmonizedCalendar(title, generatedBy);
+    @PostMapping
+    public HarmonizedCalendar create(@Valid @RequestBody HarmonizedCalendar calendar) {
+        return service.save(calendar);
+    }
+
+    @PutMapping("/{id}")
+    public HarmonizedCalendar update(@PathVariable Long id,
+                                     @Valid @RequestBody HarmonizedCalendar calendar) {
+        return service.update(id, calendar);
     }
 
     @GetMapping("/{id}")
-    public HarmonizedCalendar get(@PathVariable Long id) {
-        return service.getCalendarById(id);
+    public HarmonizedCalendar getById(@PathVariable Long id) {
+        return service.getById(id);
     }
 
     @GetMapping
     public List<HarmonizedCalendar> getAll() {
-        return service.getAllCalendars();
+        return service.getAll();
     }
 
-    @GetMapping("/range")
-    public List<HarmonizedCalendar> byRange(@RequestParam LocalDate start,
-                                            @RequestParam LocalDate end) {
-        return service.getCalendarsWithinRange(start, end);
+    @GetMapping("/branch/{branchId}")
+    public List<HarmonizedCalendar> getByBranch(@PathVariable Long branchId) {
+        return service.getByBranch(branchId);
     }
 }
