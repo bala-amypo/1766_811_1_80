@@ -23,7 +23,6 @@ public class SecurityConfig {
         this.jwtUtil = jwtUtil;
     }
 
-    // JwtAuthenticationFilter bean receives UserDetailsService as method parameter
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(CustomUserDetailsService userDetailsService) {
         return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
