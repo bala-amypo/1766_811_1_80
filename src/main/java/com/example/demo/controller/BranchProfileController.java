@@ -57,57 +57,35 @@ public class BranchProfileController {
     }
 }
 */
-package com.example.demo.entity;
+// src/main/java/com/example/demo/controller/BranchProfileController.java
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import com.example.demo.entity.BranchProfile;
+import com.example.demo.service.BranchProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-@Entity
-public class BranchProfile {
+import java.util.List;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@RestController
+@RequestMapping("/api/branches")
+public class BranchProfileController {
 
-    private String branchCode;
-    private String branchName;
-    private String contactEmail;
-    private LocalDateTime lastSyncAt;
-    private Boolean active;
+    @Autowired
+    private BranchProfileService branchProfileService;
 
-    public BranchProfile() {}
-
-    public BranchProfile(Long id, String branchCode, String branchName,
-                         String contactEmail, LocalDateTime lastSyncAt, Boolean active) {
-        this.id = id;
-        this.branchCode = branchCode;
-        this.branchName = branchName;
-        this.contactEmail = contactEmail;
-        this.lastSyncAt = lastSyncAt;
-        this.active = active;
+    @PostMapping
+    public BranchProfile createBranch(@RequestBody BranchProfile branch) {
+        return branchProfileService.createBranch(branch);
     }
 
-    @PrePersist
-    public void prePersist() {
-        if (lastSyncAt == null) lastSyncAt = LocalDateTime.now();
-        if (active == null) active = true;
+    @GetMapping
+    public List<BranchProfile> getAllBranches() {
+        return branchProfileService.getAllBranches();
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getBranchCode() { return branchCode; }
-    public void setBranchCode(String branchCode) { this.branchCode = branchCode; }
-
-    public String getBranchName() { return branchName; }
-    public void setBranchName(String branchName) { this.branchName = branchName; }
-
-    public String getContactEmail() { return contactEmail; }
-    public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
-
-    public LocalDateTime getLastSyncAt() { return lastSyncAt; }
-    public void setLastSyncAt(LocalDateTime lastSyncAt) { this.lastSyncAt = lastSyncAt; }
-
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
+    @PatchMapping("/{id}/status")
+    public BranchProfile updateBranchStatus(@PathVariable Long id, @RequestParam Boolean active) {
+        return branchProfileService.updateBranchStatus(id, active);
+    }
 }
