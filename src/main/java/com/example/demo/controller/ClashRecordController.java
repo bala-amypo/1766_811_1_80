@@ -1,38 +1,37 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.ClashRecord;
+import com.example.demo.service.impl.ClashDetectionServiceImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/clashes")
 public class ClashRecordController {
 
-    @Autowired
-    private ClashRecordService clashRecordService;
+    private final ClashDetectionServiceImpl clashDetectionService;
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ClashRecord> createClash(@RequestBody ClashRecord record) {
-        return ResponseEntity.ok(clashRecordService.create(record));
+    public ClashRecordController(ClashDetectionServiceImpl clashDetectionService) {
+        this.clashDetectionService = clashDetectionService;
     }
 
-    @PutMapping("/{id}/resolve")
-    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/event/{eventId}")
+    public ResponseEntity<List<ClashRecord>> getClashesForEvent(@PathVariable Long eventId) {
+        List<ClashRecord> list = clashDetectionService.getClashesForEvent(eventId);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/unresolved")
+    public ResponseEntity<List<ClashRecord>> getUnresolvedClashes() {
+        List<ClashRecord> list = clashDetectionService.getUnresolvedClashes();
+        return ResponseEntity.ok(list);
+    }
+
+    @PostMapping("/resolve/{id}")
     public ResponseEntity<ClashRecord> resolveClash(@PathVariable Long id) {
-        return ResponseEntity.ok(clashRecordService.resolve(id));
-    }
-
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<ClashRecord> getClash(@PathVariable Long id) {
-        return ResponseEntity.ok(clashRecordService.getById(id));
-    }
-
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<List<ClashRecord>> getAllClashes() {
-        return ResponseEntity.ok(clashRecordService.getAll());
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteClash(@PathVariable Long id) {
-        clashRecordService.delete(id);
-        return ResponseEntity.noContent().build();
+        ClashRecord updated = clashDetectionService.resolveClash(id);
+        return ResponseEntity.ok(updated);
     }
 }

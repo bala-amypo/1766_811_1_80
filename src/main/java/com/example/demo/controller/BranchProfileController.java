@@ -1,38 +1,44 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.BranchProfile;
+import com.example.demo.service.impl.BranchProfileServiceImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/branches")
 public class BranchProfileController {
 
-    @Autowired
-    private BranchProfileService branchProfileService;
+    private final BranchProfileServiceImpl branchProfileService;
+
+    public BranchProfileController(BranchProfileServiceImpl branchProfileService) {
+        this.branchProfileService = branchProfileService;
+    }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BranchProfile> createBranch(@RequestBody BranchProfile branch) {
-        return ResponseEntity.ok(branchProfileService.create(branch));
+    public ResponseEntity<BranchProfile> createBranch(@RequestBody BranchProfile branchProfile) {
+        BranchProfile created = branchProfileService.createBranch(branchProfile);
+        return ResponseEntity.ok(created);
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BranchProfile> updateBranch(@PathVariable Long id, @RequestBody BranchProfile branch) {
-        return ResponseEntity.ok(branchProfileService.update(id, branch));
-    }
-
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<BranchProfile> getBranch(@PathVariable Long id) {
-        return ResponseEntity.ok(branchProfileService.getById(id));
+    @PutMapping("/{id}/status")
+    public ResponseEntity<BranchProfile> updateBranchStatus(
+            @PathVariable Long id, @RequestParam Boolean active) {
+        BranchProfile updated = branchProfileService.updateBranchStatus(id, active);
+        return ResponseEntity.ok(updated);
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
     public ResponseEntity<List<BranchProfile>> getAllBranches() {
-        return ResponseEntity.ok(branchProfileService.getAll());
+        List<BranchProfile> list = branchProfileService.getAllBranches();
+        return ResponseEntity.ok(list);
     }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteBranch(@PathVariable Long id) {
-        branchProfileService.delete(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<BranchProfile> getBranchById(@PathVariable Long id) {
+        BranchProfile branch = branchProfileService.getBranchById(id);
+        return ResponseEntity.ok(branch);
     }
 }

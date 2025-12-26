@@ -1,38 +1,40 @@
+package com.example.demo.controller;
+
+import com.example.demo.dto.MergeEventsRequest;
+import com.example.demo.entity.EventMergeRecord;
+import com.example.demo.service.impl.EventMergeServiceImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/merge-records")
-public class EventMergeRecordController {
+public class EventMergeController {
 
-    @Autowired
-    private EventMergeRecordService mergeRecordService;
+    private final EventMergeServiceImpl eventMergeService;
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<EventMergeRecord> createRecord(@RequestBody EventMergeRecord record) {
-        return ResponseEntity.ok(mergeRecordService.create(record));
+    public EventMergeController(EventMergeServiceImpl eventMergeService) {
+        this.eventMergeService = eventMergeService;
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<EventMergeRecord> updateRecord(@PathVariable Long id, @RequestBody EventMergeRecord record) {
-        return ResponseEntity.ok(mergeRecordService.update(id, record));
+    @PostMapping("/merge")
+    public ResponseEntity<EventMergeRecord> mergeEvents(@RequestBody MergeEventsRequest request) {
+        EventMergeRecord merged = eventMergeService.mergeEvents(request.getEventIds(), request.getReason());
+        return ResponseEntity.ok(merged);
+    }
+
+    @GetMapping("/range")
+    public ResponseEntity<List<EventMergeRecord>> getMergeRecordsByDate(
+            @RequestParam LocalDate start, @RequestParam LocalDate end) {
+        List<EventMergeRecord> list = eventMergeService.getMergeRecordsByDate(start, end);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<EventMergeRecord> getRecord(@PathVariable Long id) {
-        return ResponseEntity.ok(mergeRecordService.getById(id));
-    }
-
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<List<EventMergeRecord>> getAllRecords() {
-        return ResponseEntity.ok(mergeRecordService.getAll());
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteRecord(@PathVariable Long id) {
-        mergeRecordService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<EventMergeRecord> getMergeRecordById(@PathVariable Long id) {
+        EventMergeRecord record = eventMergeService.getMergeRecordById(id);
+        return ResponseEntity.ok(record);
     }
 }

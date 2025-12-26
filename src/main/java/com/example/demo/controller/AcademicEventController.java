@@ -1,38 +1,50 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.AcademicEvent;
+import com.example.demo.service.impl.AcademicEventServiceImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/events")
 public class AcademicEventController {
 
-    @Autowired
-    private AcademicEventService academicEventService;
+    private final AcademicEventServiceImpl academicEventService;
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AcademicEvent> createEvent(@RequestBody AcademicEvent event) {
-        return ResponseEntity.ok(academicEventService.create(event));
+    public AcademicEventController(AcademicEventServiceImpl academicEventService) {
+        this.academicEventService = academicEventService;
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AcademicEvent> updateEvent(@PathVariable Long id, @RequestBody AcademicEvent event) {
-        return ResponseEntity.ok(academicEventService.update(id, event));
+    @PostMapping
+    public ResponseEntity<AcademicEvent> createEvent(@RequestBody AcademicEvent event) {
+        AcademicEvent created = academicEventService.createEvent(event);
+        return ResponseEntity.ok(created);
+    }
+
+    @GetMapping("/branch/{branchId}")
+    public ResponseEntity<List<AcademicEvent>> getEventsByBranch(@PathVariable Long branchId) {
+        List<AcademicEvent> list = academicEventService.getEventsByBranch(branchId);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<AcademicEvent> getEvent(@PathVariable Long id) {
-        return ResponseEntity.ok(academicEventService.getById(id));
+    public ResponseEntity<AcademicEvent> getEventById(@PathVariable Long id) {
+        AcademicEvent event = academicEventService.getEventById(id);
+        return ResponseEntity.ok(event);
     }
 
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<List<AcademicEvent>> getAllEvents() {
-        return ResponseEntity.ok(academicEventService.getAll());
+    @PutMapping("/{id}")
+    public ResponseEntity<AcademicEvent> updateEvent(@PathVariable Long id,
+                                                     @RequestBody AcademicEvent event) {
+        AcademicEvent updated = academicEventService.updateEvent(id, event);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
-        academicEventService.delete(id);
+        academicEventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
     }
 }
