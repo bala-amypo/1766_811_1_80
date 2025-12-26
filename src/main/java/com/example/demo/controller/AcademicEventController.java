@@ -4,6 +4,7 @@ import com.example.demo.entity.AcademicEvent;
 import com.example.demo.service.AcademicEventService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class AcademicEventController {
         this.academicEventService = academicEventService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER')")
     @PostMapping
     public ResponseEntity<AcademicEvent> createEvent(@RequestBody AcademicEvent event) {
         return ResponseEntity.ok(academicEventService.createEvent(event));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<AcademicEvent> updateEvent(
             @PathVariable Long id,
@@ -32,16 +35,19 @@ public class AcademicEventController {
         return ResponseEntity.ok(academicEventService.updateEvent(id, event));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER','REVIEWER')")
     @GetMapping("/branch/{branchId}")
     public ResponseEntity<List<AcademicEvent>> getEventsByBranch(@PathVariable Long branchId) {
         return ResponseEntity.ok(academicEventService.getEventsByBranch(branchId));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER','REVIEWER')")
     @GetMapping("/{id}")
     public ResponseEntity<AcademicEvent> getEventById(@PathVariable Long id) {
         return ResponseEntity.ok(academicEventService.getEventById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER','REVIEWER')")
     @GetMapping
     public ResponseEntity<List<AcademicEvent>> getAllEvents() {
         return ResponseEntity.ok(academicEventService.getAllEvents());

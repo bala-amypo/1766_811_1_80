@@ -5,6 +5,7 @@ import com.example.demo.entity.EventMergeRecord;
 import com.example.demo.service.EventMergeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class EventMergeController {
         this.eventMergeService = eventMergeService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER')")
     @PostMapping
     public ResponseEntity<EventMergeRecord> mergeEvents(
             @RequestBody MergeEventsRequest request) {
@@ -33,15 +35,26 @@ public class EventMergeController {
         );
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER','REVIEWER')")
     @GetMapping("/{id}")
-    public ResponseEntity<EventMergeRecord> getMergeRecord(@PathVariable Long id) {
+    public ResponseEntity<EventMergeRecord> getMergeRecordById(@PathVariable Long id) {
         return ResponseEntity.ok(eventMergeService.getMergeRecordById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER','REVIEWER')")
     @GetMapping
     public ResponseEntity<List<EventMergeRecord>> getAllMergeRecords() {
         return ResponseEntity.ok(eventMergeService.getAllMergeRecords());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CALENDAR_MANAGER','REVIEWER')")
     @GetMapping("/range")
-    public Respon
+    public ResponseEntity<List<EventMergeRecord>> getMergeRecordsByDate(
+            @RequestParam LocalDate start,
+            @RequestParam LocalDate end) {
+
+        return ResponseEntity.ok(
+                eventMergeService.getMergeRecordsByDate(start, end)
+        );
+    }
+}
