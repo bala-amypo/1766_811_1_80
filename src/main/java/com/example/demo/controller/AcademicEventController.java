@@ -51,73 +51,192 @@ public class AcademicEventController {
     }
 }
 */
-package com.example.demo.entity;
+// src/main/java/com/example/demo/controller/UserAccountController.java
+package com.example.demo.controller;
 
-import jakarta.persistence.*;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.entity.UserAccount;
+import com.example.demo.service.UserAccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserAccountController {
+
+    @Autowired
+    private UserAccountService userAccountService;
+
+    @PostMapping("/register")
+    public UserAccount registerUser(@RequestBody RegisterRequest request) {
+        UserAccount ua = new UserAccount();
+        ua.setName(request.getName());
+        ua.setEmail(request.getEmail());
+        ua.setPassword(request.getPassword());
+        ua.setRole(request.getRole());
+        ua.setDepartment(request.getDepartment());
+        return userAccountService.register(ua);
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@RequestBody LoginRequest request) {
+        // Normally JWT generation and authentication happens here
+        return "Login simulated for " + request.getEmail();
+    }
+}
+
+// src/main/java/com/example/demo/controller/BranchProfileController.java
+package com.example.demo.controller;
+
+import com.example.demo.entity.BranchProfile;
+import com.example.demo.service.BranchProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/branches")
+public class BranchProfileController {
+
+    @Autowired
+    private BranchProfileService branchProfileService;
+
+    @PostMapping
+    public BranchProfile createBranch(@RequestBody BranchProfile branch) {
+        return branchProfileService.createBranch(branch);
+    }
+
+    @GetMapping
+    public List<BranchProfile> getAllBranches() {
+        return branchProfileService.getAllBranches();
+    }
+
+    @PatchMapping("/{id}/status")
+    public BranchProfile updateBranchStatus(@PathVariable Long id, @RequestParam Boolean active) {
+        return branchProfileService.updateBranchStatus(id, active);
+    }
+}
+
+// src/main/java/com/example/demo/controller/AcademicEventController.java
+package com.example.demo.controller;
+
+import com.example.demo.entity.AcademicEvent;
+import com.example.demo.service.AcademicEventService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/events")
+public class AcademicEventController {
+
+    @Autowired
+    private AcademicEventService academicEventService;
+
+    @PostMapping
+    public AcademicEvent createEvent(@RequestBody AcademicEvent event) {
+        return academicEventService.createEvent(event);
+    }
+
+    @GetMapping("/branch/{branchId}")
+    public List<AcademicEvent> getEventsByBranch(@PathVariable Long branchId) {
+        return academicEventService.getEventsByBranch(branchId);
+    }
+}
+
+// src/main/java/com/example/demo/controller/ClashDetectionController.java
+package com.example.demo.controller;
+
+import com.example.demo.entity.ClashRecord;
+import com.example.demo.service.ClashDetectionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/clashes")
+public class ClashDetectionController {
+
+    @Autowired
+    private ClashDetectionService clashDetectionService;
+
+    @GetMapping("/event/{eventId}")
+    public List<ClashRecord> getClashesForEvent(@PathVariable Long eventId) {
+        return clashDetectionService.getClashesForEvent(eventId);
+    }
+
+    @GetMapping("/unresolved")
+    public List<ClashRecord> getUnresolvedClashes() {
+        return clashDetectionService.getUnresolvedClashes();
+    }
+
+    @PatchMapping("/{id}/resolve")
+    public ClashRecord resolveClash(@PathVariable Long id) {
+        return clashDetectionService.resolveClash(id);
+    }
+}
+
+// src/main/java/com/example/demo/controller/EventMergeController.java
+package com.example.demo.controller;
+
+import com.example.demo.entity.EventMergeRecord;
+import com.example.demo.service.EventMergeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
-@Entity
-public class AcademicEvent {
+@RestController
+@RequestMapping("/api/merge-records")
+public class EventMergeController {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Autowired
+    private EventMergeService eventMergeService;
 
-    private Long branchId;
-    private String title;
-    private String eventType;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String location;
-    private String description;
-    private LocalDateTime submittedAt;
-
-    public AcademicEvent() {}
-
-    public AcademicEvent(Long id, Long branchId, String title, String eventType,
-                         LocalDate startDate, LocalDate endDate,
-                         String location, String description, LocalDateTime submittedAt) {
-        this.id = id;
-        this.branchId = branchId;
-        this.title = title;
-        this.eventType = eventType;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.location = location;
-        this.description = description;
-        this.submittedAt = submittedAt;
+    @PostMapping("/merge")
+    public EventMergeRecord mergeEvents(@RequestBody List<Long> eventIds) {
+        return eventMergeService.mergeEvents(eventIds, "CONFLICT_RESOLUTION");
     }
 
-    @PrePersist
-    public void prePersist() {
-        if (submittedAt == null) submittedAt = LocalDateTime.now();
+    @GetMapping("/range")
+    public List<EventMergeRecord> getMergeRecordsByDate(@RequestParam LocalDate start,
+                                                        @RequestParam LocalDate end) {
+        return eventMergeService.getMergeRecordsByDate(start, end);
+    }
+}
+
+// src/main/java/com/example/demo/controller/HarmonizedCalendarController.java
+package com.example.demo.controller;
+
+import com.example.demo.entity.HarmonizedCalendar;
+import com.example.demo.service.HarmonizedCalendarService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/harmonized-calendars")
+public class HarmonizedCalendarController {
+
+    @Autowired
+    private HarmonizedCalendarService harmonizedCalendarService;
+
+    @PostMapping
+    public HarmonizedCalendar generateCalendar(@RequestParam String title,
+                                               @RequestParam String generatedBy) {
+        return harmonizedCalendarService.generateHarmonizedCalendar(title, generatedBy);
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public Long getBranchId() { return branchId; }
-    public void setBranchId(Long branchId) { this.branchId = branchId; }
-
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
-    public String getEventType() { return eventType; }
-    public void setEventType(String eventType) { this.eventType = eventType; }
-
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public LocalDateTime getSubmittedAt() { return submittedAt; }
-    public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
+    @GetMapping("/range")
+    public List<HarmonizedCalendar> getCalendarsWithinRange(@RequestParam LocalDate start,
+                                                            @RequestParam LocalDate end) {
+        return harmonizedCalendarService.getCalendarsWithinRange(start, end);
+    }
 }
