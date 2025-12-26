@@ -5,7 +5,7 @@ import com.example.demo.repository.BranchProfileRepository;
 import com.example.demo.service.BranchProfileService;
 import org.springframework.stereotype.Service;
 import java.util.List;
-
+@Service
 public class BranchProfileServiceImpl implements BranchProfileService {
 
     private final BranchProfileRepository repository;
