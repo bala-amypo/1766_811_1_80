@@ -1,4 +1,4 @@
-package com.example.demo.service.impl;
+/*package com.example.demo.service.impl;
 
 import com.example.demo.entity.AcademicEvent;
 import com.example.demo.entity.EventMergeRecord;
@@ -42,5 +42,46 @@ public class EventMergeServiceImpl implements EventMergeService {
         );
 
         return mergeRepo.save(record);
+    }
+}
+*/
+package com.example.demo.service.impl;
+
+import com.example.demo.entity.EventMergeRecord;
+import com.example.demo.repository.EventMergeRecordRepository;
+import com.example.demo.service.EventMergeRecordService;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class EventMergeRecordServiceImpl implements EventMergeRecordService {
+
+    private final EventMergeRecordRepository repository;
+
+    public EventMergeRecordServiceImpl(EventMergeRecordRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public EventMergeRecord save(EventMergeRecord record) {
+        return repository.save(record);
+    }
+
+    @Override
+    public List<EventMergeRecord> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Optional<EventMergeRecord> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    public List<EventMergeRecord> findBetweenDates(LocalDate start, LocalDate end) {
+        return repository.findByMergedStartDateBetween(start, end);
     }
 }
