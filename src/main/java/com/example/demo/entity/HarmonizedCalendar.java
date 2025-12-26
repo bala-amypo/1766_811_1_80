@@ -2,49 +2,40 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "harmonized_calendars")
 public class HarmonizedCalendar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-    private String generatedBy;
-    private LocalDateTime generatedAt;
-    private LocalDate effectiveFrom;
-    private LocalDate effectiveTo;
+    private String name;
 
-    @Column(columnDefinition = "TEXT")
-    private String eventsJson;
+    private String description;
 
-    public HarmonizedCalendar() {}
+    private LocalDate startDate;
 
-    @PrePersist
-    public void prePersist() {
-        this.generatedAt = LocalDateTime.now();
-    }
+    private LocalDate endDate;
 
-    // getters and setters
+    private Long branchId;
+
+    
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getGeneratedBy() { return generatedBy; }
-    public void setGeneratedBy(String generatedBy) { this.generatedBy = generatedBy; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public LocalDateTime getGeneratedAt() { return generatedAt; }
+    public LocalDate getStartDate() { return startDate; }
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
 
-    public LocalDate getEffectiveFrom() { return effectiveFrom; }
-    public void setEffectiveFrom(LocalDate effectiveFrom) { this.effectiveFrom = effectiveFrom; }
+    public LocalDate getEndDate() { return endDate; }
+    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 
-    public LocalDate getEffectiveTo() { return effectiveTo; }
-    public void setEffectiveTo(LocalDate effectiveTo) { this.effectiveTo = effectiveTo; }
-
-    public String getEventsJson() { return eventsJson; }
-    public void setEventsJson(String eventsJson) { this.eventsJson = eventsJson; }
+    public Long getBranchId() { return branchId; }
+    public void setBranchId(Long branchId) { this.branchId = branchId; }
 }

@@ -1,12 +1,13 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.EventMergeRecord;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.EventMergeRecordRepository;
 import com.example.demo.service.EventMergeService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EventMergeServiceImpl implements EventMergeService {
@@ -18,20 +19,15 @@ public class EventMergeServiceImpl implements EventMergeService {
     }
 
     @Override
-    public EventMergeRecord create(EventMergeRecord record) {
+    public EventMergeRecord save(EventMergeRecord record) {
         return repository.save(record);
-    }
-
-    @Override
-    public EventMergeRecord update(Long id, EventMergeRecord record) {
-        EventMergeRecord existing = getById(id);
-        return repository.save(existing);
     }
 
     @Override
     public EventMergeRecord getById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("EventMergeRecord not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Event merge record not found with id: " + id));
     }
 
     @Override
@@ -40,7 +36,12 @@ public class EventMergeServiceImpl implements EventMergeService {
     }
 
     @Override
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public List<EventMergeRecord> getByDateRange(LocalDate startDate, LocalDate endDate) {
+        return repository.findAll()
+                .stream()
+                .filter(r ->
+                        !r.getMergedStartDate().isAfter(endDate) &&
+                        !r.getMergedEndDate().isBefore(startDate))
+                .collect(Collectors.toList());
     }
 }

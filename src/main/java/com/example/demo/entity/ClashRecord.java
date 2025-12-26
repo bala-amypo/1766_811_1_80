@@ -4,49 +4,30 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "clash_records")
 public class ClashRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long eventId;
-    private Long eventDate;
-    private String clashType;
-    private String severity;
-    private String details;
-    private LocalDateTime detectedAt;
-    private Boolean resolved = false;
+    @ManyToOne
+    private AcademicEvent event1;
 
-    public ClashRecord() {}
+    @ManyToOne
+    private AcademicEvent event2;
 
-    @PrePersist
-    public void prePersist() {
-        this.detectedAt = LocalDateTime.now();
-        if (resolved == null) resolved = false;
-    }
+    private String description;
 
-    // getters and setters
+    
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getEventId() { return eventId; }
-    public void setEventId(Long eventId) { this.eventId = eventId; }
+    public AcademicEvent getEvent1() { return event1; }
+    public void setEvent1(AcademicEvent event1) { this.event1 = event1; }
 
-    public Long getEventDate() { return eventDate; }
-    public void setEventDate(Long eventDate) { this.eventDate = eventDate; }
+    public AcademicEvent getEvent2() { return event2; }
+    public void setEvent2(AcademicEvent event2) { this.event2 = event2; }
 
-    public String getClashType() { return clashType; }
-    public void setClashType(String clashType) { this.clashType = clashType; }
-
-    public String getSeverity() { return severity; }
-    public void setSeverity(String severity) { this.severity = severity; }
-
-    public String getDetails() { return details; }
-    public void setDetails(String details) { this.details = details; }
-
-    public LocalDateTime getDetectedAt() { return detectedAt; }
-
-    public Boolean getResolved() { return resolved; }
-    public void setResolved(Boolean resolved) { this.resolved = resolved; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }

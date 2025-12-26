@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface AcademicEventService {
 
-    AcademicEvent createEvent(AcademicEvent event);
+    AcademicEvent save(AcademicEvent event);
 
-    List<AcademicEvent> getEventsByBranch(Long branchId);
+    AcademicEvent update(Long id, AcademicEvent event);
 
-    AcademicEvent updateEvent(Long id, AcademicEvent event);
+    AcademicEvent getById(Long id);
 
-    AcademicEvent getEventById(Long id);
+    List<AcademicEvent> getAll();
 
-    List<AcademicEvent> getAllEvents();
+    List<AcademicEvent> getByBranch(Long branchId);
 }

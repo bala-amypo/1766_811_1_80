@@ -1,17 +1,19 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.AcademicEvent;
 import com.example.demo.entity.ClashRecord;
+
 import java.util.List;
 
 public interface ClashDetectionService {
 
-    ClashRecord createClash(ClashRecord clashRecord);
+    List<ClashRecord> detectClashes(List<AcademicEvent> events);
 
-    ClashRecord updateClash(Long id, ClashRecord clashRecord);
+    ClashRecord save(ClashRecord record);
 
-    ClashRecord getClashById(Long id);
+    ClashRecord update(Long id, ClashRecord record);
 
-    List<ClashRecord> getAllClashes();
+    ClashRecord getById(Long id);
 
-    void deleteClash(Long id);
+    List<ClashRecord> getAll();
 }
