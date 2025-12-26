@@ -1,38 +1,31 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "branch_profiles")
+@Table(name = "branch_profiles", uniqueConstraints = @UniqueConstraint(columnNames = "branchCode"))
 public class BranchProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Column(unique = true)
     private String branchCode;
-
-    @NotBlank
     private String branchName;
-
-    @Email
     private String contactEmail;
-
-    private Boolean active;
     private LocalDateTime lastSyncAt;
+    private Boolean active = true;
 
     public BranchProfile() {}
 
     @PrePersist
-    public void onCreate() {
+    public void prePersist() {
         this.lastSyncAt = LocalDateTime.now();
-        if (active == null) active = true;
+        if (this.active == null) this.active = true;
     }
 
+    // getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -45,8 +38,8 @@ public class BranchProfile {
     public String getContactEmail() { return contactEmail; }
     public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
 
+    public LocalDateTime getLastSyncAt() { return lastSyncAt; }
+
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
-
-    public LocalDateTime getLastSyncAt() { return lastSyncAt; }
 }
