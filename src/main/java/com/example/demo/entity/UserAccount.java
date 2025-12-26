@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_accounts")
+@Table(name = "users")
 public class UserAccount {
 
     @Id
@@ -22,10 +22,8 @@ public class UserAccount {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String role; // Default "REVIEWER" if not set
+    private String role; // default "REVIEWER"
 
-    @Column(nullable = false)
     private String department;
 
     private LocalDateTime createdAt;
@@ -46,15 +44,11 @@ public class UserAccount {
 
     @PrePersist
     public void prePersist() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-        if (role == null || role.isBlank()) {
-            role = "REVIEWER";
-        }
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (role == null) role = "REVIEWER";
     }
 
-    // Getters and setters
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
