@@ -3,7 +3,6 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.HarmonizedCalendar;
 import com.example.demo.repository.HarmonizedCalendarRepository;
 import com.example.demo.service.HarmonizedCalendarService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,25 +11,21 @@ import java.util.List;
 @Service
 public class HarmonizedCalendarServiceImpl implements HarmonizedCalendarService {
 
-    @Autowired
-    private HarmonizedCalendarRepository calendarRepository;
+    private final HarmonizedCalendarRepository repository;
 
-    @Override
-    public HarmonizedCalendar generateHarmonizedCalendar(String title, String generatedBy) {
-        HarmonizedCalendar calendar = new HarmonizedCalendar();
-        calendar.setTitle(title);
-        calendar.setGeneratedBy(generatedBy);
-        calendar.setGeneratedDate(LocalDate.now());
-        return calendarRepository.save(calendar);
+    public HarmonizedCalendarServiceImpl(HarmonizedCalendarRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public HarmonizedCalendar getCalendarById(Long id) {
-        return calendarRepository.findById(id).orElse(null);
+    public HarmonizedCalendar generate(HarmonizedCalendar calendar) {
+        return repository.save(calendar);
     }
 
     @Override
-    public List<HarmonizedCalendar> getCalendarsWithinRange(LocalDate start, LocalDate end) {
-        return calendarRepository.findByGeneratedDateBetween(start, end);
+    public List<HarmonizedCalendar> findActive(LocalDate date) {
+        return repository
+                .findByEffectiveFromLessThanEqualAndEffectiveToGreaterThanEqual(
+                        date, date);
     }
 }

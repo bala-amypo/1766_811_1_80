@@ -1,10 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.UserAccount;
 
+import java.util.Optional;
+
 public interface UserAccountService {
-    UserAccount registerUser(RegisterRequest request);
-    UserAccount getUserById(Long id);
-    UserAccount getUserByEmail(String email);
+
+    UserAccount register(UserAccount userAccount);
+
+    Optional<UserAccount> findByEmail(String email);
 }

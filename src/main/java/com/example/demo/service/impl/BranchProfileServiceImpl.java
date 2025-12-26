@@ -3,7 +3,6 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.BranchProfile;
 import com.example.demo.repository.BranchProfileRepository;
 import com.example.demo.service.BranchProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,31 +10,26 @@ import java.util.List;
 @Service
 public class BranchProfileServiceImpl implements BranchProfileService {
 
-    @Autowired
-    private BranchProfileRepository branchProfileRepository;
+    private final BranchProfileRepository repository;
 
-    @Override
-    public BranchProfile createBranch(BranchProfile branchProfile) {
-        return branchProfileRepository.save(branchProfile);
+    public BranchProfileServiceImpl(BranchProfileRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public BranchProfile updateBranchStatus(Long id, Boolean active) {
-        BranchProfile branch = branchProfileRepository.findById(id).orElse(null);
-        if(branch != null) {
-            branch.setActive(active);
-            return branchProfileRepository.save(branch);
-        }
-        return null;
+    public BranchProfile save(BranchProfile profile) {
+        return repository.save(profile);
     }
 
     @Override
-    public List<BranchProfile> getAllBranches() {
-        return branchProfileRepository.findAll();
+    public List<BranchProfile> findAll() {
+        return repository.findAll();
     }
 
     @Override
-    public BranchProfile getBranchById(Long id) {
-        return branchProfileRepository.findById(id).orElse(null);
+    public BranchProfile deactivate(Long id) {
+        BranchProfile bp = repository.findById(id).orElseThrow();
+        bp.setActive(false);
+        return repository.save(bp);
     }
 }

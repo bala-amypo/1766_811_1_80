@@ -1,35 +1,46 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.AcademicEvent;
 import com.example.demo.entity.EventMergeRecord;
-import com.example.demo.repository.EventMergeRepository;
+import com.example.demo.repository.AcademicEventRepository;
+import com.example.demo.repository.EventMergeRecordRepository;
 import com.example.demo.service.EventMergeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EventMergeServiceImpl implements EventMergeService {
 
-    @Autowired
-    private EventMergeRepository mergeRepository;
+    private final AcademicEventRepository eventRepo;
+    private final EventMergeRecordRepository mergeRepo;
+
+    public EventMergeServiceImpl(AcademicEventRepository eventRepo,
+                                 EventMergeRecordRepository mergeRepo) {
+        this.eventRepo = eventRepo;
+        this.mergeRepo = mergeRepo;
+    }
 
     @Override
     public EventMergeRecord mergeEvents(List<Long> eventIds, String reason) {
-        EventMergeRecord record = new EventMergeRecord();
-        record.setEventIds(eventIds);
-        record.setReason(reason);
-        return mergeRepository.save(record);
-    }
 
-    @Override
-    public EventMergeRecord getMergeRecordById(Long id) {
-        return mergeRepository.findById(id).orElse(null);
-    }
+        List<AcademicEvent> events = eventRepo.findAllById(eventIds);
 
-    @Override
-    public List<EventMergeRecord> getMergeRecordsByDate(LocalDate start, LocalDate end) {
-        return mergeRepository.findByDateBetween(start, end);
+        String ids = eventIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        EventMergeRecord record = new EventMergeRecord(
+                null,
+                ids,
+                "Merged Event",
+                events.get(0).getStartDate(),
+                events.get(0).getEndDate(),
+                reason,
+                null
+        );
+
+        return mergeRepo.save(record);
     }
 }

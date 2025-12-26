@@ -3,7 +3,6 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.ClashRecord;
 import com.example.demo.repository.ClashRecordRepository;
 import com.example.demo.service.ClashDetectionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,26 +10,26 @@ import java.util.List;
 @Service
 public class ClashDetectionServiceImpl implements ClashDetectionService {
 
-    @Autowired
-    private ClashRecordRepository clashRepository;
+    private final ClashRecordRepository repository;
 
-    @Override
-    public List<ClashRecord> getClashesForEvent(Long eventId) {
-        return clashRepository.findByEventId(eventId);
+    public ClashDetectionServiceImpl(ClashRecordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public List<ClashRecord> getUnresolvedClashes() {
-        return clashRepository.findByResolved(false);
+    public List<ClashRecord> findUnresolved() {
+        return repository.findByResolvedFalse();
     }
 
     @Override
-    public ClashRecord resolveClash(Long id) {
-        ClashRecord clash = clashRepository.findById(id).orElse(null);
-        if(clash != null) {
-            clash.setResolved(true);
-            return clashRepository.save(clash);
-        }
-        return null;
+    public List<ClashRecord> findByEvent(Long eventId) {
+        return repository.findByEventAIdOrEventBId(eventId, eventId);
+    }
+
+    @Override
+    public ClashRecord resolve(Long id) {
+        ClashRecord cr = repository.findById(id).orElseThrow();
+        cr.setResolved(true);
+        return repository.save(cr);
     }
 }
