@@ -1,38 +1,33 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.UserAccount;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.service.impl.UserAccountServiceImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserAccountController {
 
-    @Autowired
-    private UserAccountService userAccountService;
+    private final UserAccountServiceImpl userAccountService;
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserAccount> createUser(@RequestBody UserAccount user) {
-        return ResponseEntity.ok(userAccountService.create(user));
+    public UserAccountController(UserAccountServiceImpl userAccountService) {
+        this.userAccountService = userAccountService;
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserAccount> updateUser(@PathVariable Long id, @RequestBody UserAccount user) {
-        return ResponseEntity.ok(userAccountService.update(id, user));
+    @PostMapping("/register")
+    public ResponseEntity<UserAccount> registerUser(@RequestBody UserAccount user) {
+        UserAccount created = userAccountService.register(user);
+        return ResponseEntity.ok(created);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<UserAccount> getUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userAccountService.getById(id));
-    }
-
-    @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','REVIEWER')")
-    public ResponseEntity<List<UserAccount>> getAllUsers() {
-        return ResponseEntity.ok(userAccountService.getAll());
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userAccountService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<UserAccount> getUserById(@PathVariable Long id) {
+        UserAccount user = userAccountService.getUser(id);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found with ID: " + id);
+        }
+        return ResponseEntity.ok(user);
     }
 }
