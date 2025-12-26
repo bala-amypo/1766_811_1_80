@@ -12,17 +12,20 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI() {
+
+        SecurityScheme bearerScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER)
+                .name("Authorization");
+
         return new OpenAPI()
                 .info(new Info()
-                        .title("Multi-Branch Academic Calendar Harmonizer")
-                        .version("1.0")
-                        .description("Academic calendar merge & clash detection system"))
+                        .title("Multi-Branch Academic Calendar Harmonizer API")
+                        .description("Centralized academic calendar with clash detection and harmonization")
+                        .version("1.0"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-                .components(new io.swagger.v3.oas.models.Components()
-                        .addSecuritySchemes("bearerAuth",
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT")));
+                .schemaRequirement("bearerAuth", bearerScheme);
     }
 }
