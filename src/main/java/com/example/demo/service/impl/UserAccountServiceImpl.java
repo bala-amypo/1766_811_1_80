@@ -1,42 +1,35 @@
+// UserAccountServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.UserAccount;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.exception.ValidationException;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
 
-    private final UserAccountRepository userAccountRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserAccountRepository repository;
 
-    public UserAccountServiceImpl(UserAccountRepository userAccountRepository,
-                                  PasswordEncoder passwordEncoder) {
-        this.userAccountRepository = userAccountRepository;
-        this.passwordEncoder = passwordEncoder;
+    @Override
+    public UserAccount create(UserAccount userAccount) { return repository.save(userAccount); }
+
+    @Override
+    public UserAccount update(Long id, UserAccount userAccount) {
+        userAccount.setId(id);
+        return repository.save(userAccount);
     }
 
     @Override
-    public UserAccount register(UserAccount user) {
-        if (userAccountRepository.existsByEmail(user.getEmail())) {
-            throw new ValidationException("Email already in use");
-        }
-        if (user.getPassword() == null || user.getPassword().length() < 8) {
-            throw new ValidationException("Password must be at least 8 characters");
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (user.getRole() == null) user.setRole("REVIEWER");
-        return userAccountRepository.save(user);
-    }
+    public UserAccount getById(Long id) { return repository.findById(id).orElse(null); }
 
     @Override
-    public UserAccount getUser(Long id) {
-        return userAccountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-    }
+    public List<UserAccount> getAll() { return repository.findAll(); }
+
+    @Override
+    public void delete(Long id) { repository.deleteById(id); }
 }

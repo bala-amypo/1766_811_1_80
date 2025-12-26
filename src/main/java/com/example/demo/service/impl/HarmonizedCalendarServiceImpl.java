@@ -1,43 +1,35 @@
+// HarmonizedCalendarServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.HarmonizedCalendar;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.HarmonizedCalendarRepository;
 import com.example.demo.service.HarmonizedCalendarService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class HarmonizedCalendarServiceImpl implements HarmonizedCalendarService {
 
-    private final HarmonizedCalendarRepository harmonizedCalendarRepository;
+    @Autowired
+    private HarmonizedCalendarRepository repository;
 
-    public HarmonizedCalendarServiceImpl(HarmonizedCalendarRepository harmonizedCalendarRepository) {
-        this.harmonizedCalendarRepository = harmonizedCalendarRepository;
+    @Override
+    public HarmonizedCalendar create(HarmonizedCalendar calendar) { return repository.save(calendar); }
+
+    @Override
+    public HarmonizedCalendar update(Long id, HarmonizedCalendar calendar) {
+        calendar.setId(id);
+        return repository.save(calendar);
     }
 
     @Override
-    public HarmonizedCalendar generateHarmonizedCalendar(String title, String generatedBy) {
-        HarmonizedCalendar calendar = new HarmonizedCalendar();
-        calendar.setTitle(title);
-        calendar.setGeneratedBy(generatedBy);
-        calendar.setGeneratedAt(LocalDateTime.now());
-        calendar.setEffectiveFrom(LocalDate.now());
-        calendar.setEffectiveTo(LocalDate.now().plusMonths(3));
-        return harmonizedCalendarRepository.save(calendar);
-    }
+    public HarmonizedCalendar getById(Long id) { return repository.findById(id).orElse(null); }
 
     @Override
-    public List<HarmonizedCalendar> getCalendarsWithinRange(LocalDate from, LocalDate to) {
-        return harmonizedCalendarRepository.findByEffectiveFromLessThanEqualAndEffectiveToGreaterThanEqual(from, to);
-    }
+    public List<HarmonizedCalendar> getAll() { return repository.findAll(); }
 
     @Override
-    public HarmonizedCalendar getCalendarById(Long id) {
-        return harmonizedCalendarRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("HarmonizedCalendar not found with id: " + id));
-    }
+    public void delete(Long id) { repository.deleteById(id); }
 }
