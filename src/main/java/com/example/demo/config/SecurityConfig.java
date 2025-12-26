@@ -2,7 +2,9 @@ package com.example.demo.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,16 +26,21 @@ public class SecurityConfig {
         this.authenticationProvider = authenticationProvider;
     }
 
+    // ✅ ADD THIS BEAN (MOST IMPORTANT)
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config
+    ) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // ❌ disable csrf (JWT)
             .csrf(csrf -> csrf.disable())
 
-            // 🔓 authorization rules
             .authorizeHttpRequests(auth -> auth
-                // PUBLIC endpoints
                 .requestMatchers(
                     "/",
                     "/auth/**",
@@ -41,20 +48,15 @@ public class SecurityConfig {
                     "/swagger-ui.html",
                     "/v3/api-docs/**"
                 ).permitAll()
-
-                // 🔐 everything else requires JWT
                 .anyRequest().authenticated()
             )
 
-            // 🧠 stateless session
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // 🔐 authentication provider
             .authenticationProvider(authenticationProvider)
 
-            // 🔑 JWT filter
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
