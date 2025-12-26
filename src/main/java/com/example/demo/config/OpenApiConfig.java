@@ -1,3 +1,14 @@
+package com.example.demo.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import java.util.List;
+
 @Configuration
 public class OpenApiConfig {
 
@@ -5,8 +16,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .servers(List.of(
-                        new Server().url("http://localhost:8080"), // local dev
-                        new Server().url("https://9340.pro604cr.amypo.ai/") // production
+                        new Server().url("https://9340.pro604cr.amypo.ai/")
                 ))
                 .components(new Components()
                         .addSecuritySchemes("BearerAuth", 
@@ -16,10 +26,6 @@ public class OpenApiConfig {
                                 .bearerFormat("JWT")
                         )
                 )
-                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
-                .info(new io.swagger.v3.oas.models.info.Info()
-                        .title("Demo JWT API")
-                        .version("1.0")
-                        .description("Spring Boot 3 + JWT Authentication API"));
+                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"));
     }
 }
