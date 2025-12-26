@@ -11,41 +11,36 @@ import java.util.List;
 @Service
 public class ClashDetectionServiceImpl implements ClashDetectionService {
 
-    private final ClashRecordRepository clashRecordRepository;
+    private final ClashRecordRepository repository;
 
-    public ClashDetectionServiceImpl(ClashRecordRepository clashRecordRepository) {
-        this.clashRecordRepository = clashRecordRepository;
+    public ClashDetectionServiceImpl(ClashRecordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public ClashRecord createClash(ClashRecord clashRecord) {
-        return clashRecordRepository.save(clashRecord);
+        return repository.save(clashRecord);
     }
 
     @Override
     public ClashRecord updateClash(Long id, ClashRecord clashRecord) {
         ClashRecord existing = getClashById(id);
-        existing.setBranchCode(clashRecord.getBranchCode());
-        existing.setEventDate(clashRecord.getEventDate());
-        existing.setEventType(clashRecord.getEventType());
-        existing.setDescription(clashRecord.getDescription());
-        return clashRecordRepository.save(existing);
+        return repository.save(existing);
     }
 
     @Override
     public ClashRecord getClashById(Long id) {
-        return clashRecordRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Clash record not found"));
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ClashRecord not found"));
     }
 
     @Override
     public List<ClashRecord> getAllClashes() {
-        return clashRecordRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
     public void deleteClash(Long id) {
-        ClashRecord clash = getClashById(id);
-        clashRecordRepository.delete(clash);
+        repository.deleteById(id);
     }
 }
