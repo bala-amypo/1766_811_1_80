@@ -11,21 +11,18 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserAccountRepository repository;
+    private final UserAccountRepository userRepo;
 
-    public CustomUserDetailsService(UserAccountRepository repository) {
-        this.repository = repository;
+    public CustomUserDetailsService(UserAccountRepository userRepo) {
+        this.userRepo = userRepo;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserAccount user = repository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserAccount user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
-        );
+        return new User(user.getEmail(), user.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
     }
 }
