@@ -1,37 +1,50 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.ClashRecord;
-import com.example.demo.service.impl.ClashDetectionServiceImpl;
-import org.springframework.http.ResponseEntity;
+import com.example.demo.service.ClashDetectionService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/clashes")
+@Tag(name = "Clash Records")
 public class ClashRecordController {
 
-    private final ClashDetectionServiceImpl clashDetectionService;
+    private final ClashDetectionService service;
 
-    public ClashRecordController(ClashDetectionServiceImpl clashDetectionService) {
-        this.clashDetectionService = clashDetectionService;
+    public ClashRecordController(ClashDetectionService service) {
+        this.service = service;
     }
 
+    // POST /api/clashes
+    @PostMapping
+    public ClashRecord log(@RequestBody ClashRecord record) {
+        throw new UnsupportedOperationException("Persist via service if needed");
+    }
+
+    // PUT /api/clashes/{id}/resolve
+    @PutMapping("/{id}/resolve")
+    public ClashRecord resolve(@PathVariable Long id) {
+        return service.resolve(id);
+    }
+
+    // GET /api/clashes/event/{eventId}
     @GetMapping("/event/{eventId}")
-    public ResponseEntity<List<ClashRecord>> getClashesForEvent(@PathVariable Long eventId) {
-        List<ClashRecord> list = clashDetectionService.getClashesForEvent(eventId);
-        return ResponseEntity.ok(list);
+    public List<ClashRecord> byEvent(@PathVariable Long eventId) {
+        return service.findByEvent(eventId);
     }
 
+    // GET /api/clashes/unresolved
     @GetMapping("/unresolved")
-    public ResponseEntity<List<ClashRecord>> getUnresolvedClashes() {
-        List<ClashRecord> list = clashDetectionService.getUnresolvedClashes();
-        return ResponseEntity.ok(list);
+    public List<ClashRecord> unresolved() {
+        return service.findUnresolved();
     }
 
-    @PostMapping("/resolve/{id}")
-    public ResponseEntity<ClashRecord> resolveClash(@PathVariable Long id) {
-        ClashRecord updated = clashDetectionService.resolveClash(id);
-        return ResponseEntity.ok(updated);
+    // GET /api/clashes
+    @GetMapping
+    public List<ClashRecord> all() {
+        throw new UnsupportedOperationException("List all clashes");
     }
 }
