@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.MergeEventsRequest;
 import com.example.demo.entity.EventMergeRecord;
 import com.example.demo.service.EventMergeService;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/merge-records")
-@Tag(name = "Event Merge Records")
 public class EventMergeController {
 
     private final EventMergeService service;
@@ -21,24 +19,23 @@ public class EventMergeController {
     }
 
     @PostMapping
-    public EventMergeRecord create(@Valid @RequestBody EventMergeRecord record) {
-        return service.save(record);
+    public EventMergeRecord merge(@RequestBody MergeEventsRequest request) {
+        return service.mergeEvents(request.getEventIds(), request.getReason());
     }
 
     @GetMapping("/{id}")
-    public EventMergeRecord getById(@PathVariable Long id) {
-        return service.getById(id);
+    public EventMergeRecord get(@PathVariable Long id) {
+        return service.getMergeRecordById(id);
     }
 
     @GetMapping
     public List<EventMergeRecord> getAll() {
-        return service.getAll();
+        return service.getAllMergeRecords();
     }
 
     @GetMapping("/range")
-    public List<EventMergeRecord> getByDateRange(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
-        return service.getByDateRange(startDate, endDate);
+    public List<EventMergeRecord> byDate(@RequestParam LocalDate start,
+                                         @RequestParam LocalDate end) {
+        return service.getMergeRecordsByDate(start, end);
     }
 }

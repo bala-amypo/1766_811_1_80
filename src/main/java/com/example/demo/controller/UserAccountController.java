@@ -1,34 +1,64 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.JwtResponse;
+import com.example.demo.dto.LoginRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.UserAccount;
+import com.example.demo.security.JwtUtil;
 import com.example.demo.service.UserAccountService;
-import jakarta.validation.Valid;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/auth")
 public class UserAccountController {
 
-    private final UserAccountService service;
+    private final UserAccountService userService;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserAccountController(UserAccountService service) {
-        this.service = service;
+    public UserAccountController(UserAccountService userService,
+                                 JwtUtil jwtUtil,
+                                 PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping
-    public UserAccount create(@Valid @RequestBody UserAccount user) {
-        return service.save(user);
+    @PostMapping("/register")
+    public UserAccount register(@RequestBody RegisterRequest request) {
+        UserAccount user = new UserAccount();
+        user.setFullName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(request.getRole());
+        user.setDepartment(request.getDepartment());
+        return userService.register(user);
     }
 
-    @GetMapping("/{id}")
-    public UserAccount getById(@PathVariable Long id) {
-        return service.getById(id);
+    @PostMapping("/login")
+    public JwtResponse login(@RequestBody LoginRequest request) {
+        UserAccount user = userService.findByEmail(request.getEmail());
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        String token = jwtUtil.generateToken(
+                user.getId(), user.getEmail(), user.getRole());
+
+        return new JwtResponse(token, user.getEmail(), user.getRole());
     }
 
-    @GetMapping
-    public List<UserAccount> getAll() {
-        return service.getAll();
+    @GetMapping("/users")
+    public List<UserAccount> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/users/{id}")
+    public UserAccount getUser(@PathVariable Long id) {
+        return userService.getUser(id);
     }
 }

@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.AcademicEvent;
 import com.example.demo.entity.ClashRecord;
 import com.example.demo.service.ClashDetectionService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,35 +10,34 @@ import java.util.List;
 @RequestMapping("/api/clashes")
 public class ClashRecordController {
 
-    private final ClashDetectionService clashService;
+    private final ClashDetectionService service;
 
-    public ClashRecordController(ClashDetectionService clashService) {
-        this.clashService = clashService;
-    }
-
-    @PostMapping("/detect")
-    public List<ClashRecord> detect(@RequestBody List<AcademicEvent> events) {
-        return clashService.detectClashes(events);
+    public ClashRecordController(ClashDetectionService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public ClashRecord create(@Valid @RequestBody ClashRecord record) {
-        return clashService.save(record);
+    public ClashRecord create(@RequestBody ClashRecord clash) {
+        return service.logClash(clash);
     }
 
-    @PutMapping("/{id}")
-    public ClashRecord update(@PathVariable Long id,
-                              @Valid @RequestBody ClashRecord record) {
-        return clashService.update(id, record);
+    @PutMapping("/{id}/resolve")
+    public ClashRecord resolve(@PathVariable Long id) {
+        return service.resolveClash(id);
     }
 
-    @GetMapping("/{id}")
-    public ClashRecord getById(@PathVariable Long id) {
-        return clashService.getById(id);
+    @GetMapping("/event/{eventId}")
+    public List<ClashRecord> byEvent(@PathVariable Long eventId) {
+        return service.getClashesForEvent(eventId);
+    }
+
+    @GetMapping("/unresolved")
+    public List<ClashRecord> unresolved() {
+        return service.getUnresolvedClashes();
     }
 
     @GetMapping
     public List<ClashRecord> getAll() {
-        return clashService.getAll();
+        return service.getAllClashes();
     }
 }
