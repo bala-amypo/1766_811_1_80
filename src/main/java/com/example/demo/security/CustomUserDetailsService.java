@@ -1,35 +1,28 @@
-package com.example.demo.security;
+package com.example.demo.config;
 
 import com.example.demo.entity.UserAccount;
-import com.example.demo.service.UserAccountService;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.*;
+import com.example.demo.repository.UserAccountRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserAccountService service;
-
-    public CustomUserDetailsService(UserAccountService service) {
-        this.service = service;
-    }
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
-
-        UserAccount user = service.findByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return new User(
-                user.getEmail(),
-                user.getPassword(),
-                Collections.singleton(
-                        new SimpleGrantedAuthority("ROLE_" + user.getRole())
-                )
-        );
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserAccount user = userAccountRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        return User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole()) // assuming role is like "USER" or "ADMIN"
+                .build();
     }
 }
