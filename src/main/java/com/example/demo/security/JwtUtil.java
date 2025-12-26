@@ -1,8 +1,6 @@
 package com.example.demo.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
@@ -10,16 +8,25 @@ import java.util.Date;
 
 public class JwtUtil {
 
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long expirationMs = 86400000;
+    private Key key;
+    private final long expirationMillis = 86400000; // 1 day
+
+    public JwtUtil() {
+        initKey();
+    }
+
+    public void initKey() {
+        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    }
 
     public String generateToken(Long userId, String email, String role) {
         return Jwts.builder()
-                .setSubject(email)
                 .claim("userId", userId)
+                .claim("email", email)
                 .claim("role", role)
+                .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
                 .signWith(key)
                 .compact();
     }
@@ -33,7 +40,7 @@ public class JwtUtil {
     }
 
     public String extractEmail(String token) {
-        return validateToken(token).getSubject();
+        return validateToken(token).get("email", String.class);
     }
 
     public Long extractUserId(String token) {
