@@ -1,4 +1,4 @@
-/*package com.example.demo.entity;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -45,4 +45,3 @@ public class ClashRecord {
 
     public void setResolved(Boolean resolved) { this.resolved = resolved; }
 }
-*/

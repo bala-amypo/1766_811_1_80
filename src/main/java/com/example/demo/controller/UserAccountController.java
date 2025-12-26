@@ -1,4 +1,4 @@
-/*package com.example.demo.controller;
+package com.example.demo.controller;
 
 import com.example.demo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +43,3 @@ public class UserAccountController {
         return ResponseEntity.ok(token);
     }
 }
-*/

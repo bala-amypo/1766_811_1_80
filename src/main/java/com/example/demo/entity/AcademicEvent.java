@@ -1,4 +1,4 @@
-/*package com.example.demo.entity;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -49,4 +49,4 @@ public class AcademicEvent {
 
     public void setId(Long id) { this.id = id; }
 }
-*/
+

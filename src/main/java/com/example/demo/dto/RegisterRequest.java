@@ -1,4 +1,4 @@
-/*package com.example.demo.dto;
+package com.example.demo.dto;
 
 public class RegisterRequest {
     private String name;
@@ -20,4 +20,4 @@ public class RegisterRequest {
     public String getEmail() { return email; }
     public String getRole() { return role; }
 }
-*/
+

@@ -1,4 +1,4 @@
-/*package com.example.demo.entity;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
@@ -39,4 +39,3 @@ public class UserAccount {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 }
-*/

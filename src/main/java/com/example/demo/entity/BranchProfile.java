@@ -1,4 +1,4 @@
-/*package com.example.demo.entity;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -41,4 +41,3 @@ public class BranchProfile {
     public void setId(Long id) { this.id = id; }
     public void setActive(Boolean active) { this.active = active; }
 }
-*/
