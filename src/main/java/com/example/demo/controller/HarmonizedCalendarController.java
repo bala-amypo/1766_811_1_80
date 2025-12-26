@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.HarmonizedCalendarRequest;
 import com.example.demo.entity.HarmonizedCalendar;
 import com.example.demo.service.HarmonizedCalendarService;
-import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,37 +12,32 @@ import java.util.List;
 @RequestMapping("/api/harmonized-calendars")
 public class HarmonizedCalendarController {
 
-    private final HarmonizedCalendarService harmonizedCalendarService;
-
-    public HarmonizedCalendarController(HarmonizedCalendarService harmonizedCalendarService) {
-        this.harmonizedCalendarService = harmonizedCalendarService;
-    }
+    @Autowired
+    private HarmonizedCalendarService calendarService;
 
     @PostMapping
-    public ResponseEntity<HarmonizedCalendar> generateCalendar(
-            @Valid @RequestBody HarmonizedCalendarRequest request) {
+    public ResponseEntity<HarmonizedCalendar> createCalendar(@RequestBody HarmonizedCalendar calendar) {
+        return ResponseEntity.ok(calendarService.create(calendar));
+    }
 
-        HarmonizedCalendar cal = harmonizedCalendarService.generateHarmonizedCalendar(
-                request.getCalendarName(), "SYSTEM"
-        );
-        return ResponseEntity.ok(cal);
+    @PutMapping("/{id}")
+    public ResponseEntity<HarmonizedCalendar> updateCalendar(@PathVariable Long id, @RequestBody HarmonizedCalendar calendar) {
+        return ResponseEntity.ok(calendarService.update(id, calendar));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<HarmonizedCalendar> getCalendar(@PathVariable Long id) {
-        HarmonizedCalendar cal = harmonizedCalendarService.getCalendarById(id);
-        return ResponseEntity.ok(cal);
+        return ResponseEntity.ok(calendarService.getById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<HarmonizedCalendar>> getCalendarsInRange(
-            @RequestParam("from") String from,
-            @RequestParam("to") String to) {
+    public ResponseEntity<List<HarmonizedCalendar>> getAllCalendars() {
+        return ResponseEntity.ok(calendarService.getAll());
+    }
 
-        List<HarmonizedCalendar> list = harmonizedCalendarService.getCalendarsWithinRange(
-                LocalDate.parse(from),
-                LocalDate.parse(to)
-        );
-        return ResponseEntity.ok(list);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCalendar(@PathVariable Long id) {
+        calendarService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

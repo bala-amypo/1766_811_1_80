@@ -1,39 +1,43 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.MergeEventsRequest;
 import com.example.demo.entity.EventMergeRecord;
-import com.example.demo.service.EventMergeService;
-import jakarta.validation.Valid;
+import com.example.demo.service.EventMergeRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/merge-records")
-public class EventMergeController {
+public class EventMergeRecordController {
 
-    private final EventMergeService eventMergeService;
+    @Autowired
+    private EventMergeRecordService mergeRecordService;
 
-    public EventMergeController(EventMergeService eventMergeService) {
-        this.eventMergeService = eventMergeService;
+    @PostMapping
+    public ResponseEntity<EventMergeRecord> createRecord(@RequestBody EventMergeRecord record) {
+        return ResponseEntity.ok(mergeRecordService.create(record));
     }
 
-    @PostMapping("/merge")
-    public ResponseEntity<EventMergeRecord> mergeEvents(@Valid @RequestBody MergeEventsRequest request) {
-        EventMergeRecord record = eventMergeService.mergeEvents(request.getEventIds(), "CONFLICT_RESOLUTION");
-        return ResponseEntity.ok(record);
+    @PutMapping("/{id}")
+    public ResponseEntity<EventMergeRecord> updateRecord(@PathVariable Long id, @RequestBody EventMergeRecord record) {
+        return ResponseEntity.ok(mergeRecordService.update(id, record));
     }
 
-    @GetMapping("/range")
-    public ResponseEntity<List<EventMergeRecord>> getMergeRecordsByDate(
-            @RequestParam("start") String start,
-            @RequestParam("end") String end) {
+    @GetMapping("/{id}")
+    public ResponseEntity<EventMergeRecord> getRecord(@PathVariable Long id) {
+        return ResponseEntity.ok(mergeRecordService.getById(id));
+    }
 
-        List<EventMergeRecord> list = eventMergeService.getMergeRecordsByDate(
-                LocalDate.parse(start), LocalDate.parse(end)
-        );
-        return ResponseEntity.ok(list);
+    @GetMapping
+    public ResponseEntity<List<EventMergeRecord>> getAllRecords() {
+        return ResponseEntity.ok(mergeRecordService.getAll());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRecord(@PathVariable Long id) {
+        mergeRecordService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
