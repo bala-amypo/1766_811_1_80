@@ -1,13 +1,15 @@
-// AcademicEventService.java
 package com.example.demo.service;
 
 import com.example.demo.entity.AcademicEvent;
+
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AcademicEventService {
-    AcademicEvent create(AcademicEvent event);
-    AcademicEvent update(Long id, AcademicEvent event);
-    AcademicEvent getById(Long id);
-    List<AcademicEvent> getAll();
-    void delete(Long id);
+
+    AcademicEvent save(AcademicEvent event);
+
+    List<AcademicEvent> findByBranch(Long branchId);
+
+    List<AcademicEvent> findOverlapping(LocalDate start, LocalDate end);
 }
