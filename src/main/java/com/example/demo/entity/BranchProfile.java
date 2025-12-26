@@ -1,31 +1,90 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-public class AcademicEvent {
+public class BranchProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long branchId;
-    private String title;
-    private String eventType;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String location;
-    private String description;
-    private LocalDateTime submittedAt;
+    private String branchCode;
+    private String branchName;
+    private String contactEmail;
+
+    private LocalDateTime lastSyncAt;
+    private Boolean active;
+
+    public BranchProfile() {
+    }
+
+    public BranchProfile(Long id, String branchCode, String branchName,
+                         String contactEmail, LocalDateTime lastSyncAt, Boolean active) {
+        this.id = id;
+        this.branchCode = branchCode;
+        this.branchName = branchName;
+        this.contactEmail = contactEmail;
+        this.lastSyncAt = lastSyncAt;
+        this.active = active;
+    }
 
     @PrePersist
     public void prePersist() {
-        if (submittedAt == null) submittedAt = LocalDateTime.now();
+        if (lastSyncAt == null) {
+            lastSyncAt = LocalDateTime.now();
+        }
+        if (active == null) {
+            active = true;
+        }
     }
 
-    public AcademicEvent() {}
+    public Long getId() {
+        return id;
+    }
 
-    public AcademicEvent(Long id, Long branchId, String title, String eventType,
-                         LocalDate startDate,
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public LocalDateTime getLastSyncAt() {
+        return lastSyncAt;
+    }
+
+    public void setLastSyncAt(LocalDateTime lastSyncAt) {
+        this.lastSyncAt = lastSyncAt;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+}
