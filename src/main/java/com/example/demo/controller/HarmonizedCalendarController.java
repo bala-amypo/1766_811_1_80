@@ -44,33 +44,3 @@ public class HarmonizedCalendarController {
     }
 }
 */
-// src/main/java/com/example/demo/controller/HarmonizedCalendarController.java
-package com.example.demo.controller;
-
-import com.example.demo.entity.HarmonizedCalendar;
-import com.example.demo.service.HarmonizedCalendarService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/harmonized-calendars")
-public class HarmonizedCalendarController {
-
-    @Autowired
-    private HarmonizedCalendarService harmonizedCalendarService;
-
-    @PostMapping
-    public HarmonizedCalendar generateCalendar(@RequestParam String title,
-                                               @RequestParam String generatedBy) {
-        return harmonizedCalendarService.generateHarmonizedCalendar(title, generatedBy);
-    }
-
-    @GetMapping("/range")
-    public List<HarmonizedCalendar> getCalendarsWithinRange(@RequestParam LocalDate start,
-                                                            @RequestParam LocalDate end) {
-        return harmonizedCalendarService.getCalendarsWithinRange(start, end);
-    }
-}

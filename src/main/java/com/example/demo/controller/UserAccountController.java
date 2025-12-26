@@ -44,36 +44,3 @@ public class UserAccountController {
     }
 }
 */
-package com.example.demo.controller;
-
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.RegisterRequest;
-import com.example.demo.entity.UserAccount;
-import com.example.demo.service.UserAccountService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-@RestController
-@RequestMapping("/api/users")
-public class UserAccountController {
-
-    @Autowired
-    private UserAccountService userAccountService;
-
-    @PostMapping("/register")
-    public UserAccount registerUser(@RequestBody RegisterRequest request) {
-        UserAccount ua = new UserAccount();
-        ua.setName(request.getName());
-        ua.setEmail(request.getEmail());
-        ua.setPassword(request.getPassword());
-        ua.setRole(request.getRole());
-        ua.setDepartment(request.getDepartment());
-        return userAccountService.register(ua);
-    }
-
-    @PostMapping("/login")
-    public String loginUser(@RequestBody LoginRequest request) {
-        // Normally JWT generation and authentication happens here
-        return "Login simulated for " + request.getEmail();
-    }
-}

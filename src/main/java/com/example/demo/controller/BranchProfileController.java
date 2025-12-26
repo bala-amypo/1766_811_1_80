@@ -57,35 +57,3 @@ public class BranchProfileController {
     }
 }
 */
-// src/main/java/com/example/demo/controller/BranchProfileController.java
-package com.example.demo.controller;
-
-import com.example.demo.entity.BranchProfile;
-import com.example.demo.service.BranchProfileService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/branches")
-public class BranchProfileController {
-
-    @Autowired
-    private BranchProfileService branchProfileService;
-
-    @PostMapping
-    public BranchProfile createBranch(@RequestBody BranchProfile branch) {
-        return branchProfileService.createBranch(branch);
-    }
-
-    @GetMapping
-    public List<BranchProfile> getAllBranches() {
-        return branchProfileService.getAllBranches();
-    }
-
-    @PatchMapping("/{id}/status")
-    public BranchProfile updateBranchStatus(@PathVariable Long id, @RequestParam Boolean active) {
-        return branchProfileService.updateBranchStatus(id, active);
-    }
-}

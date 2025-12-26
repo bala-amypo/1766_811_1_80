@@ -45,31 +45,3 @@ public class EventMergeController {
     }
 }
 */
-package com.example.demo.controller;
-
-import com.example.demo.entity.EventMergeRecord;
-import com.example.demo.service.EventMergeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/merge-records")
-public class EventMergeController {
-
-    @Autowired
-    private EventMergeService eventMergeService;
-
-    @PostMapping("/merge")
-    public EventMergeRecord mergeEvents(@RequestBody List<Long> eventIds) {
-        return eventMergeService.mergeEvents(eventIds, "CONFLICT_RESOLUTION");
-    }
-
-    @GetMapping("/range")
-    public List<EventMergeRecord> getMergeRecordsByDate(@RequestParam LocalDate start,
-                                                        @RequestParam LocalDate end) {
-        return eventMergeService.getMergeRecordsByDate(start, end);
-    }
-}
