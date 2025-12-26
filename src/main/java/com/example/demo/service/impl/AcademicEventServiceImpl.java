@@ -1,51 +1,48 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.AcademicEvent;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.AcademicEventRepository;
+import com.example.demo.service.AcademicEventService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class AcademicEventServiceImpl {
+public class AcademicEventServiceImpl implements AcademicEventService {
 
-    private final AcademicEventRepository academicEventRepository;
+    @Autowired
+    private AcademicEventRepository eventRepository;
 
-    public AcademicEventServiceImpl(AcademicEventRepository academicEventRepository) {
-        this.academicEventRepository = academicEventRepository;
-    }
-
+    @Override
     public AcademicEvent createEvent(AcademicEvent event) {
-        return academicEventRepository.save(event);
+        return eventRepository.save(event);
     }
 
+    @Override
     public AcademicEvent getEventById(Long id) {
-        return academicEventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+        return eventRepository.findById(id).orElse(null);
     }
 
+    @Override
     public List<AcademicEvent> getEventsByBranch(Long branchId) {
-        return academicEventRepository.findByBranchId(branchId);
+        return eventRepository.findByBranchId(branchId);
     }
 
-    public AcademicEvent updateEvent(Long id, AcademicEvent updatedEvent) {
-        AcademicEvent existing = academicEventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
-
-        existing.setTitle(updatedEvent.getTitle());
-        existing.setEventType(updatedEvent.getEventType());
-        existing.setStartDate(updatedEvent.getStartDate());
-        existing.setEndDate(updatedEvent.getEndDate());
-        existing.setLocation(updatedEvent.getLocation());
-        existing.setDescription(updatedEvent.getDescription());
-
-        return academicEventRepository.save(existing);
+    @Override
+    public AcademicEvent updateEvent(Long id, AcademicEvent event) {
+        AcademicEvent existing = eventRepository.findById(id).orElse(null);
+        if(existing != null) {
+            existing.setTitle(event.getTitle());
+            existing.setEventType(event.getEventType());
+            existing.setDate(event.getDate());
+            return eventRepository.save(existing);
+        }
+        return null;
     }
 
+    @Override
     public void deleteEvent(Long id) {
-        AcademicEvent existing = academicEventRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
-        academicEventRepository.delete(existing);
+        eventRepository.deleteById(id);
     }
 }

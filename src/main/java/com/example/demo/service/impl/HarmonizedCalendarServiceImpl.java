@@ -1,54 +1,36 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.HarmonizedCalendar;
-import com.example.demo.entity.AcademicEvent;
 import com.example.demo.repository.HarmonizedCalendarRepository;
-import com.example.demo.repository.AcademicEventRepository;
+import com.example.demo.service.HarmonizedCalendarService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class HarmonizedCalendarServiceImpl {
+public class HarmonizedCalendarServiceImpl implements HarmonizedCalendarService {
 
-    private final HarmonizedCalendarRepository harmonizedCalendarRepository;
-    private final AcademicEventRepository academicEventRepository;
+    @Autowired
+    private HarmonizedCalendarRepository calendarRepository;
 
-    public HarmonizedCalendarServiceImpl(HarmonizedCalendarRepository harmonizedCalendarRepository,
-                                         AcademicEventRepository academicEventRepository) {
-        this.harmonizedCalendarRepository = harmonizedCalendarRepository;
-        this.academicEventRepository = academicEventRepository;
-    }
-
-    // Generate a new harmonized calendar
+    @Override
     public HarmonizedCalendar generateHarmonizedCalendar(String title, String generatedBy) {
-        List<AcademicEvent> events = academicEventRepository.findAll();
-        String eventsJson = events.stream()
-                .map(e -> String.format("{\"id\":%d,\"title\":\"%s\",\"start\":\"%s\",\"end\":\"%s\"}",
-                        e.getId(), e.getTitle(), e.getStartDate(), e.getEndDate()))
-                .collect(Collectors.joining(",", "[", "]"));
-
-        HarmonizedCalendar cal = new HarmonizedCalendar();
-        cal.setTitle(title);
-        cal.setGeneratedBy(generatedBy);
-        cal.setGeneratedAt(LocalDateTime.now());
-        cal.setEffectiveFrom(events.stream().map(AcademicEvent::getStartDate).min(LocalDate::compareTo).orElse(LocalDate.now()));
-        cal.setEffectiveTo(events.stream().map(AcademicEvent::getEndDate).max(LocalDate::compareTo).orElse(LocalDate.now()));
-        cal.setEventsJson(eventsJson);
-
-        return harmonizedCalendarRepository.save(cal);
+        HarmonizedCalendar calendar = new HarmonizedCalendar();
+        calendar.setTitle(title);
+        calendar.setGeneratedBy(generatedBy);
+        calendar.setGeneratedDate(LocalDate.now());
+        return calendarRepository.save(calendar);
     }
 
-    // Get calendars within a date range
-    public List<HarmonizedCalendar> getCalendarsWithinRange(LocalDate start, LocalDate end) {
-        return harmonizedCalendarRepository.findByEffectiveFromBetweenOrEffectiveToBetween(start, end, start, end);
-    }
-
-    // Get calendar by ID
+    @Override
     public HarmonizedCalendar getCalendarById(Long id) {
-        return harmonizedCalendarRepository.findById(id).orElse(null);
+        return calendarRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<HarmonizedCalendar> getCalendarsWithinRange(LocalDate start, LocalDate end) {
+        return calendarRepository.findByGeneratedDateBetween(start, end);
     }
 }
