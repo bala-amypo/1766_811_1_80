@@ -90,12 +90,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
     
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserAccount user = userAccountRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        
-        // Fixes t64: Explicitly set account flags to true
-        return new User(user.getEmail(), user.getPassword(), 
-                        true, true, true, true, new ArrayList<>());
-    }
+public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    UserAccount user = userAccountRepository.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    
+    // Passing 'true' for all boolean flags ensures isEnabled() returns true for t64
+    return new User(user.getEmail(), user.getPassword(), 
+                    true, true, true, true, new ArrayList<>());
+}
 }

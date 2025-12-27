@@ -15,12 +15,11 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserAccount register(UserAccount user) {
-        // Fix for t73: Must throw ValidationException with this exact message
-        if (user.getPassword() == null || user.getPassword().length() < 8) {
-            throw new ValidationException("Password must be at least 8 characters");
-        }
-        return userAccountRepository.save(user);
+    if (user.getPassword() == null || user.getPassword().length() < 8) {
+        throw new ValidationException("Password must be at least 8 characters");
     }
+    return userAccountRepository.save(user);
+}
 
     @Override
     public UserAccount findByEmail(String email) {
