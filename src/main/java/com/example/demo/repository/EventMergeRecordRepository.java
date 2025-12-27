@@ -23,5 +23,5 @@ import java.util.List;
 @Repository
 public interface EventMergeRecordRepository extends JpaRepository<EventMergeRecord, Long> {
     List<EventMergeRecord> findByMergedStartDateBetween(LocalDate start, LocalDate end);
-    List<EventMergeRecord> findByMergeDateBetween(LocalDate start, LocalDate end);
+    // List<EventMergeRecord> findByMergeDateBetween(LocalDate start, LocalDate end);
 }
