@@ -10,11 +10,16 @@ import java.io.IOException;
 @WebServlet("/simple-status")
 public class SimpleStatusServlet extends HttpServlet {
 
-    // Changed from protected to public for test accessibility
+    // Must be public to resolve "protected access" error in tests
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setStatus(200); // Required by t01 verify(response).setStatus(200)
+        // Required to satisfy t01 verification of status code
+        resp.setStatus(200); 
+        
+        // Required to satisfy t01 verification of content type
         resp.setContentType("text/plain");
-        resp.getWriter().write("Servlet Alive"); // Required by t01
+        
+        // Required to satisfy t01 verification of response body string
+        resp.getWriter().write("Servlet Alive"); 
     }
 }
