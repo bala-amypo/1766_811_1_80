@@ -164,23 +164,19 @@ public EventMergeRecord mergeEvents(List<Long> eventIds, String reason) {
         throw new ResourceNotFoundException("No events found");
     }
 
-    // FIX FOR t81: Validate that every provided ID actually exists
-    for (Long eventId : eventIds) {
-        if (!academicEventRepository.existsById(eventId)) {
-            throw new ResourceNotFoundException("Event not found with id: " + eventId);
+    // FIX FOR t81: Ensure the specific event exists
+    for (Long id : eventIds) {
+        if (!academicEventRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Event not found with id: " + id);
         }
     }
+
+    // Proceed with merging logic...
+    EventMergeRecord record = new EventMergeRecord();
+    record.setSourceEventIds(eventIds.stream().map(String::valueOf).collect(Collectors.joining(",")));
+    record.setMergeReason(reason);
     
-    // ... proceed with merging logic
-    String sourceEventIdsCsv = eventIds.stream()
-            .map(String::valueOf)
-            .collect(Collectors.joining(","));
-    
-    EventMergeRecord mergeRecord = new EventMergeRecord();
-    mergeRecord.setSourceEventIds(sourceEventIdsCsv);
-    mergeRecord.setMergeReason(reason);
-    
-    return eventMergeRecordRepository.save(mergeRecord);
+    return eventMergeRecordRepository.save(record);
 }
     
     @Override
