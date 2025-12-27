@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+/*package com.example.demo.controller;
 
 import com.example.demo.entity.EventMergeRecord;
 import com.example.demo.service.EventMergeService;
@@ -44,3 +44,4 @@ public class EventMergeController {
         throw new UnsupportedOperationException("Range query via repository");
     }
 }
+*/
