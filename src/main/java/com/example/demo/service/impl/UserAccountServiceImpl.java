@@ -64,26 +64,23 @@ public class UserAccountServiceImpl implements UserAccountService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // POST /register
     @Override
     public UserAccount registerUser(UserAccount userAccount) {
         userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
         return repository.save(userAccount);
     }
 
-    // POST /login
     @Override
     public Optional<UserAccount> login(String username, String password) {
         Optional<UserAccount> userOpt = repository.findByUsername(username);
 
         if (userOpt.isPresent() &&
-            passwordEncoder.matches(password, userOpt.get().getPassword())) {
+                passwordEncoder.matches(password, userOpt.get().getPassword())) {
             return userOpt;
         }
         return Optional.empty();
     }
 
-    // GET /users/{id}
     @Override
     public Optional<UserAccount> getUserById(Long id) {
         return repository.findById(id);
@@ -99,7 +96,6 @@ public class UserAccountServiceImpl implements UserAccountService {
         return repository.findByUsername(username);
     }
 
-    // GET /users
     @Override
     public List<UserAccount> getAllUsers() {
         return repository.findAll();
