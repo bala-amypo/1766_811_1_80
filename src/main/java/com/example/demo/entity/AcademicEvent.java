@@ -145,8 +145,8 @@ public class AcademicEvent {
     private LocalDateTime submittedAt;
     
     @PrePersist
-    protected void onCreate() {
-        submittedAt = LocalDateTime.now();
+    public void prePersist() {
+        this.submittedAt = LocalDateTime.now();
     }
     
     public AcademicEvent() {}
@@ -190,3 +190,4 @@ public class AcademicEvent {
     public LocalDateTime getSubmittedAt() { return submittedAt; }
     public void setSubmittedAt(LocalDateTime submittedAt) { this.submittedAt = submittedAt; }
 }
+
