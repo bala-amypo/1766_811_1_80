@@ -56,14 +56,25 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Autowired
     private UserAccountRepository userAccountRepository;
 
+    // @Override
+    // public UserAccount register(UserAccount user) {
+    //     // Fix for t73: Must throw ValidationException with this exact message
+    //     if (user.getPassword() == null || user.getPassword().length() < 8) {
+    //         throw new ValidationException("Password must be at least 8 characters");
+    //     }
+    //     return userAccountRepository.save(user);
+    // }
+
+
     @Override
-    public UserAccount register(UserAccount user) {
-        // Fix for t73: Must throw ValidationException with this exact message
-        if (user.getPassword() == null || user.getPassword().length() < 8) {
-            throw new ValidationException("Password must be at least 8 characters");
-        }
-        return userAccountRepository.save(user);
+public UserAccount register(UserAccount user) {
+    // FIX FOR t73: This manual check is required to pass the test assertion
+    if (user.getPassword() == null || user.getPassword().length() < 8) {
+        throw new jakarta.validation.ValidationException("Password must be at least 8 characters");
     }
+    
+    return userAccountRepository.save(user);
+}
 
     @Override
     public UserAccount findByEmail(String email) {
