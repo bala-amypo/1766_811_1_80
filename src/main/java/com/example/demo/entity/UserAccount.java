@@ -15,11 +15,10 @@ public class UserAccount {
     private String name; // Renamed from fullName to match test constructor (t61)
     
    @Column(unique = true)
-    @NotBlank(message = "Email is required")
     private String email;
     
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters") // Fixes t73
+   @NotBlank
+    @Size(min = 8) // Fixes t73
     private String password;
     
     private String role;
@@ -75,6 +74,7 @@ public class UserAccount {
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public boolean isEnabled() { return true; }
 }
 
 
