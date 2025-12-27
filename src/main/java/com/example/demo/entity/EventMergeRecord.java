@@ -173,8 +173,8 @@ public class EventMergeRecord {
     private LocalDateTime createdAt;
     
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
     
     public EventMergeRecord() {}

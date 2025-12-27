@@ -111,8 +111,9 @@ public class UserAccount {
     private LocalDateTime createdAt;
     
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    public void prePersist() {
+        if (createdAt == null) createdAt = LocalDateTime.now();
+        if (role == null) role = "REVIEWER";
     }
     
     public UserAccount() {}

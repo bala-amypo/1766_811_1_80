@@ -134,9 +134,10 @@ public class ClashRecord {
     private Boolean resolved = false;
     
     @PrePersist
-    protected void onCreate() {
-        detectedAt = LocalDateTime.now();
-    }
+    public void prePersist() {
+    if (detectedAt == null) detectedAt = LocalDateTime.now();
+    if (resolved == null) resolved = false;
+}
     
     public ClashRecord() {}
     

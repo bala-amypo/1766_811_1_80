@@ -133,8 +133,8 @@ public class HarmonizedCalendar {
     private String eventsJson;
     
     @PrePersist
-    protected void onCreate() {
-        generatedAt = LocalDateTime.now();
+    public void prePersist() {
+        this.generatedAt = LocalDateTime.now();
     }
     
     public HarmonizedCalendar() {}
