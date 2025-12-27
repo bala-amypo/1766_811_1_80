@@ -69,6 +69,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
@@ -83,32 +84,30 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount register(UserAccount userAccount) {
-
-        if (repository.existsByEmail(userAccount.getEmail())) {
-            throw new IllegalArgumentException("Email already in use");
-        }
-
-        if (userAccount.getPassword() == null ||
-            userAccount.getPassword().length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters");
-        }
-
-        if (userAccount.getRole() == null) {
-            userAccount.setRole("REVIEWER");
-        }
-
-        userAccount.setPassword(
-                passwordEncoder.encode(userAccount.getPassword())
-        );
-
+    public UserAccount registerUser(UserAccount userAccount) {
+        userAccount.setPassword(passwordEncoder.encode(userAccount.getPassword()));
         return repository.save(userAccount);
     }
 
     @Override
-    public UserAccount getUser(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public Optional<UserAccount> login(String username, String password) {
+        return repository.findByUsername(username)
+                .filter(u -> passwordEncoder.matches(password, u.getPassword()));
+    }
+
+    @Override
+    public Optional<UserAccount> getUserById(Long id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    public Optional<UserAccount> getUserByEmail(String email) {
+        return repository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<UserAccount> getUserByUsername(String username) {
+        return repository.findByUsername(username);
     }
 
     @Override

@@ -54,6 +54,7 @@ import com.example.demo.repository.EventMergeRecordRepository;
 import com.example.demo.service.EventMergeService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,30 +72,19 @@ public class EventMergeServiceImpl implements EventMergeService {
 
     @Override
     public EventMergeRecord mergeEvents(List<Long> eventIds, String reason) {
-
-        if (eventIds == null || eventIds.isEmpty()) {
-            throw new IllegalArgumentException("Event IDs required");
-        }
-
         List<AcademicEvent> events = eventRepo.findAllById(eventIds);
-
-        if (events.isEmpty()) {
-            throw new IllegalArgumentException("No events found");
-        }
 
         String ids = eventIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));
 
-        EventMergeRecord record = new EventMergeRecord(
-                null,
-                ids,
-                "Merged Event",
-                events.get(0).getStartDate(),
-                events.get(0).getEndDate(),
-                reason,
-                null
-        );
+        EventMergeRecord record = new EventMergeRecord();
+        record.setSourceEventIds(ids);
+        record.setMergedTitle("Merged Event");
+        record.setMergedStartDate(events.get(0).getStartDate());
+        record.setMergedEndDate(events.get(0).getEndDate());
+        record.setMergeReason(reason);
+        record.setCreatedAt(LocalDateTime.now());
 
         return mergeRepo.save(record);
     }
