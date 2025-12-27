@@ -43,27 +43,16 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
     
     // Additional methods for findByEmail and getAllUsers...
-}
 
         // Fix for t74: Default Role Assignment
-        if (user.getRole() == null || user.getRole().isEmpty()) {
-            user.setRole("REVIEWER");
-        }
-
-        return userAccountRepository.save(user);
-    }
-
+        
     @Override
     public UserAccount findByEmail(String email) {
         // Handles Optional return from repository
         return userAccountRepository.findByEmail(email).orElse(null);
     }
 
-    @Override
-    public UserAccount getUser(Long id) {
-        // Fix for t13: User Not Found Handling
-        return userAccountRepository.findById(id).orElse(null);
-    }
+   
 
     @Override
     public List<UserAccount> getAllUsers() {
