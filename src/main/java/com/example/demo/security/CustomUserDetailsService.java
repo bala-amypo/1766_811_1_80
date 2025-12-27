@@ -74,12 +74,15 @@ package com.example.demo.security;
 
 import com.example.demo.entity.UserAccount;
 import com.example.demo.repository.UserAccountRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority; // FIX for SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
+import java.util.List; // FIX for List
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
