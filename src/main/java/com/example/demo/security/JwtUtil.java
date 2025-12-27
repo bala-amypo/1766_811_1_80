@@ -1,7 +1,8 @@
-package com.example.demo.util;
+package com.example.demo.security;
 
 import com.example.demo.entity.UserAccount;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -14,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 @Component
 public class JwtUtil {
@@ -29,42 +29,28 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Map<String, Object> claims, String subject) {
+    // Updated for t69, t70, t71: Must include email, role, and userId claims
+    public String generateTokenForUser(UserAccount user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", user.getEmail());   // Required for t69
+        claims.put("role", user.getRole());     // Required for t70
+        claims.put("userId", user.getId());     // Required for t71
+        
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateTokenForUser(UserAccount user) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRole());
-        claims.put("userId", user.getId());
-        return generateToken(claims, user.getEmail());
-    }
-
-    public String extractUsername(String token) { return extractClaim(token, Claims::getSubject); }
-    
-    public String extractRole(String token) { return extractAllClaims(token).get("role", String.class); }
-    
-    public Long extractUserId(String token) { return extractAllClaims(token).get("userId", Long.class); }
-
-    public boolean isTokenValid(String token, String username) {
-        return (extractUsername(token).equals(username) && !isTokenExpired(token));
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
-    }
-
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        return claimsResolver.apply(extractAllClaims(token));
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-    }
+    // Required for t69-t72: parseToken method returning Jws<Claims>
+    // Update this in your JwtUtil.java
+    public Jws<Claims> parseToken(String token) {
+        return Jwts.parser() // Modern 0.12.x syntax
+            .verifyWith(key) // Replaces setSigningKey
+            .build()
+            .parseSignedClaims(token); // Replaces parseClaimsJws
+}
 }
