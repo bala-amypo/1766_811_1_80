@@ -58,7 +58,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserAccount register(UserAccount user) {
-        // Fixes t73: passwordMinLengthValidation
+        // Fix for t73: Must throw ValidationException with this exact message
         if (user.getPassword() == null || user.getPassword().length() < 8) {
             throw new ValidationException("Password must be at least 8 characters");
         }
@@ -67,7 +67,6 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public UserAccount findByEmail(String email) {
-        // Repository findByEmail likely returns Optional<UserAccount>
         return userAccountRepository.findByEmail(email).orElse(null);
     }
 
