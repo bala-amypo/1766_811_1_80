@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+/*package com.example.demo.controller;
 
 import com.example.demo.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +41,54 @@ public class UserAccountController {
         String token = jwtUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(token);
+    }
+}
+*/
+package com.example.demo.controller;
+
+import com.example.demo.entity.UserAccount;
+import com.example.demo.service.UserAccountService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+public class UserAccountController {
+
+    private final UserAccountService userAccountService;
+
+    public UserAccountController(UserAccountService userAccountService) {
+        this.userAccountService = userAccountService;
+    }
+
+    // POST /api/register
+    @PostMapping("/register")
+    public ResponseEntity<UserAccount> register(@RequestBody UserAccount userAccount) {
+        return ResponseEntity.ok(userAccountService.registerUser(userAccount));
+    }
+
+    // POST /api/login
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String username,
+                                   @RequestParam String password) {
+        return userAccountService.login(username, password)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(401).body("Invalid credentials"));
+    }
+
+    // GET /api/users
+    @GetMapping("/users")
+    public ResponseEntity<List<UserAccount>> getAllUsers() {
+        return ResponseEntity.ok(userAccountService.getAllUsers());
+    }
+
+    // GET /api/users/{id}
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        return userAccountService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
