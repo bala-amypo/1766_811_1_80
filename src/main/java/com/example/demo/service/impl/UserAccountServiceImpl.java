@@ -62,37 +62,57 @@ public class UserAccountServiceImpl implements UserAccountService {
 */
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.HarmonizedCalendar;
-import com.example.demo.repository.HarmonizedCalendarRepository;
-import com.example.demo.service.HarmonizedCalendarService;
+import com.example.demo.entity.UserAccount;
+import com.example.demo.repository.UserAccountRepository;
+import com.example.demo.service.UserAccountService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class HarmonizedCalendarServiceImpl implements HarmonizedCalendarService {
+public class UserAccountServiceImpl implements UserAccountService {
 
-    private final HarmonizedCalendarRepository repository;
+    private final UserAccountRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public HarmonizedCalendarServiceImpl(HarmonizedCalendarRepository repository) {
+    public UserAccountServiceImpl(UserAccountRepository repository,
+                                  PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public HarmonizedCalendar generate(HarmonizedCalendar calendar) {
+    public UserAccount register(UserAccount userAccount) {
 
-        if (calendar.getEffectiveFrom().isAfter(calendar.getEffectiveTo())) {
-            throw new IllegalArgumentException("Invalid effective date range");
+        if (repository.existsByEmail(userAccount.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
         }
 
-        return repository.save(calendar);
+        if (userAccount.getPassword() == null ||
+            userAccount.getPassword().length() < 8) {
+            throw new IllegalArgumentException("Password must be at least 8 characters");
+        }
+
+        if (userAccount.getRole() == null) {
+            userAccount.setRole("REVIEWER");
+        }
+
+        userAccount.setPassword(
+                passwordEncoder.encode(userAccount.getPassword())
+        );
+
+        return repository.save(userAccount);
     }
 
     @Override
-    public List<HarmonizedCalendar> findActive(LocalDate date) {
-        return repository
-                .findByEffectiveFromLessThanEqualAndEffectiveToGreaterThanEqual(
-                        date, date);
+    public UserAccount getUser(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    @Override
+    public List<UserAccount> getAllUsers() {
+        return repository.findAll();
     }
 }
