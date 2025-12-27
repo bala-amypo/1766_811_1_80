@@ -88,16 +88,23 @@ public class CustomUserDetailsService implements UserDetailsService {
     public CustomUserDetailsService(UserAccountRepository userAccountRepository) {
         this.userAccountRepository = userAccountRepository;
     }
-    @Override
+   @Override
 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     UserAccount user = userAccountRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    
-    return new org.springframework.security.core.userdetails.User(
+
+    // FIX: Convert the role from the database into a SimpleGrantedAuthority
+    // Spring Security roles typically require the "ROLE_" prefix
+    List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+    if (user.getRole() != null) {
+        authorities.add(new SimpleGrantedAuthority(user.getRole()));
+    }
+
+    return new User(
         user.getEmail(), 
         user.getPassword(), 
-        true, true, true, true, // Sets enabled=true for t64
-        new java.util.ArrayList<>()
+        true, true, true, true, 
+        authorities // Pass the populated list instead of an empty one
     );
 }
     

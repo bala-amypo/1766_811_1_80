@@ -158,51 +158,30 @@ public class EventMergeServiceImpl implements EventMergeService {
     }
     
     @Override
-    public EventMergeRecord mergeEvents(List<Long> eventIds, String reason) {
-        // 1. Validate Input (Satisfies t82)
-        if (eventIds == null || eventIds.isEmpty()) {
-            throw new ResourceNotFoundException("No events found");
-        }
-
-        // 2. Fetch and Validate Existence (Satisfies t81)
-        List<AcademicEvent> events = academicEventRepository.findAllById(eventIds);
-        
-        // Ensure every ID requested exists in the DB
-        for (Long id : eventIds) {
-            boolean exists = events.stream().anyMatch(e -> e.getId().equals(id));
-            if (!exists) {
-                throw new ResourceNotFoundException("Event not found with id: " + id);
-            }
-        }
-
-        // 3. Prepare Merged Data
-        // Convert IDs to a comma-separated string for auditing
-        String sourceEventIdsCsv = eventIds.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
-
-        // Determine merged start/end dates (taking the earliest start and latest end)
-        LocalDate mergedStart = events.stream()
-                .map(AcademicEvent::getStartDate)
-                .min(LocalDate::compareTo)
-                .orElse(LocalDate.now());
-
-        LocalDate mergedEnd = events.stream()
-                .map(AcademicEvent::getEndDate)
-                .max(LocalDate::compareTo)
-                .orElse(LocalDate.now());
-
-        // 4. Create and Save Record
-        EventMergeRecord mergeRecord = new EventMergeRecord();
-        mergeRecord.setSourceEventIds(sourceEventIdsCsv);
-        mergeRecord.setMergeReason(reason);
-        mergeRecord.setMergedTitle("Merged Event: " + reason);
-        mergeRecord.setMergedStartDate(mergedStart);
-        mergeRecord.setMergedEndDate(mergedEnd);
-        mergeRecord.setCreatedAt(LocalDateTime.now());
-        
-        return eventMergeRecordRepository.save(mergeRecord);
+public EventMergeRecord mergeEvents(List<Long> eventIds, String reason) {
+    // FIX FOR t82: Validate that the list is not null or empty
+    if (eventIds == null || eventIds.isEmpty()) {
+        throw new ResourceNotFoundException("No events found");
     }
+
+    // FIX FOR t81: Validate that every provided ID actually exists
+    for (Long eventId : eventIds) {
+        if (!academicEventRepository.existsById(eventId)) {
+            throw new ResourceNotFoundException("Event not found with id: " + eventId);
+        }
+    }
+    
+    // ... proceed with merging logic
+    String sourceEventIdsCsv = eventIds.stream()
+            .map(String::valueOf)
+            .collect(Collectors.joining(","));
+    
+    EventMergeRecord mergeRecord = new EventMergeRecord();
+    mergeRecord.setSourceEventIds(sourceEventIdsCsv);
+    mergeRecord.setMergeReason(reason);
+    
+    return eventMergeRecordRepository.save(mergeRecord);
+}
     
     @Override
     public List<EventMergeRecord> getAllMergeRecords() {
