@@ -44,24 +44,53 @@ public class UserAccountController {
     }
 }
 */
-package com.example.demo.service;
+package com.example.demo.controller;
 
 import com.example.demo.entity.UserAccount;
+import com.example.demo.service.UserAccountService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface UserAccountService {
+@RestController
+@RequestMapping("/api")
+public class UserAccountController {
 
-    UserAccount registerUser(UserAccount userAccount);
+    private final UserAccountService userAccountService;
 
-    Optional<UserAccount> login(String username, String password);
+    public UserAccountController(UserAccountService userAccountService) {
+        this.userAccountService = userAccountService;
+    }
 
-    Optional<UserAccount> getUserById(Long id);
+    // POST /api/register
+    @PostMapping("/register")
+    public ResponseEntity<UserAccount> register(@RequestBody UserAccount userAccount) {
+        return ResponseEntity.ok(userAccountService.registerUser(userAccount));
+    }
 
-    Optional<UserAccount> getUserByEmail(String email);
+    // POST /api/login  ✅ FIXED OPTION 1
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestParam String username,
+                                   @RequestParam String password) {
 
-    Optional<UserAccount> getUserByUsername(String username);
+        return userAccountService.login(username, password)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() ->
+                        ResponseEntity.status(401).body("Invalid credentials"));
+    }
 
-    List<UserAccount> getAllUsers();
+    // GET /api/users
+    @GetMapping("/users")
+    public ResponseEntity<List<UserAccount>> getAllUsers() {
+        return ResponseEntity.ok(userAccountService.getAllUsers());
+    }
+
+    // GET /api/users/{id}
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        return userAccountService.getUserById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
