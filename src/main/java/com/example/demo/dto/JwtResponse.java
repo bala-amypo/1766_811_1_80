@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+/*package com.example.demo.dto;
 
 public class JwtResponse {
 
@@ -13,5 +13,25 @@ public class JwtResponse {
 
     public String getToken() {
         return token;
+    }
+}
+*/
+package com.example.demo.dto;
+
+public class JwtResponse {
+    private String token;
+
+    public JwtResponse() {}
+
+    public JwtResponse(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
