@@ -200,4 +200,7 @@ public class BranchProfile {
     public void setContactEmail(String contactEmail) { this.contactEmail = contactEmail; }
     public LocalDateTime getLastSyncAt() { return lastSyncAt; }
     public Boolean getActive() { return active; }
+    public void setActive(Boolean active) {
+    this.active = active;
+}
 }
