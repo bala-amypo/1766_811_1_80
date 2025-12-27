@@ -88,14 +88,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     public CustomUserDetailsService(UserAccountRepository userAccountRepository) {
         this.userAccountRepository = userAccountRepository;
     }
-    
     @Override
 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     UserAccount user = userAccountRepository.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     
-    // Passing 'true' for all boolean flags ensures isEnabled() returns true for t64
-    return new User(user.getEmail(), user.getPassword(), 
-                    true, true, true, true, new ArrayList<>());
+    return new org.springframework.security.core.userdetails.User(
+        user.getEmail(), 
+        user.getPassword(), 
+        true, true, true, true, // Sets enabled=true for t64
+        new java.util.ArrayList<>()
+    );
 }
+    
 }
