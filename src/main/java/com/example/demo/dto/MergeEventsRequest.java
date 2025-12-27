@@ -24,6 +24,7 @@ public class MergeEventsRequest {
     }
 }
 */
+/*
 package com.example.demo.dto;
 
 import java.util.List;
@@ -55,3 +56,4 @@ public class MergeEventsRequest {
         this.mergeReason = mergeReason;
     }
 }
+*/
