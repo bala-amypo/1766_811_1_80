@@ -122,4 +122,10 @@ public class HarmonizedCalendarServiceImpl implements HarmonizedCalendarService 
     public List<HarmonizedCalendar> getCalendarsWithinRange(LocalDate start, LocalDate end) {
         return harmonizedCalendarRepository.findByEffectiveFromBetween(start, end);
     }
+
+    @Override
+    public List<HarmonizedCalendar> getCalendarsByDateRange(LocalDate start, LocalDate end) {
+    // This call will now work because the method exists in the repository
+    return harmonizedCalendarRepository.findByEffectiveFromBetween(start, end);
+    }
 }
