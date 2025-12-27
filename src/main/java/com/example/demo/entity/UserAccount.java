@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,9 +14,12 @@ public class UserAccount {
     
     private String name; // Renamed from fullName to match test constructor (t61)
     
-    @Column(unique = true)
+   @Column(unique = true)
+    @NotBlank(message = "Email is required")
     private String email;
     
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters") // Fixes t73
     private String password;
     
     private String role;
