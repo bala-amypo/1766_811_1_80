@@ -12,6 +12,7 @@ public class UserAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(name = "full_name", nullable = false)
     private String name;  
     
    @Column(unique = true)
