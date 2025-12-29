@@ -7,11 +7,10 @@ public class RegisterRequest {
     private String role;
     private String department;
 
-    // No-args constructor for JSON mapping
+    
     public RegisterRequest() {}
 
-    // All-args constructor required by the test: 
-    // ("User X", "x@example.com", "password123", "ADMIN", "IT")
+    
     public RegisterRequest(String name, String email, String password, String role, String department) {
         this.name = name;
         this.email = email;
@@ -20,14 +19,14 @@ public class RegisterRequest {
         this.department = department;
     }
 
-    // Getters
+    
     public String getName() { return name; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public String getRole() { return role; }
     public String getDepartment() { return department; }
 
-    // Setters
+    
     public void setName(String name) { this.name = name; }
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }
