@@ -12,13 +12,13 @@ public class UserAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String name; 
+    private String name;  
     
    @Column(unique = true)
     private String email;
     
    @NotBlank
-    @Size(min = 8) // Fixes t73
+    @Size(min = 8) 
     private String password;
     
     private String role;
@@ -29,14 +29,14 @@ public class UserAccount {
     
     @PrePersist
     public void prePersist() {
-        // Satisfies test t36: Default role must be REVIEWER
+        
         if (createdAt == null) createdAt = LocalDateTime.now();
         if (role == null) role = "REVIEWER";
     }
     
     public UserAccount() {}
     
-    // Fully matching constructor for tests t61, t62, t63
+    
     public UserAccount(Long id, String name, String email, String password, 
                        String role, String department, LocalDateTime createdAt) {
         this.id = id;
