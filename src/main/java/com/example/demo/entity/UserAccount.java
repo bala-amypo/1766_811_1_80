@@ -12,7 +12,7 @@ public class UserAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String name; // Renamed from fullName to match test constructor (t61)
+    private String name; 
     
    @Column(unique = true)
     private String email;
