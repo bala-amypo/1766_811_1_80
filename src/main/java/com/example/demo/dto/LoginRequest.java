@@ -4,7 +4,7 @@ public class LoginRequest {
     private String email;
     private String password;
 
-    // This constructor is required for t66
+    
     public LoginRequest(String email, String password) {
         this.email = email;
         this.password = password;
