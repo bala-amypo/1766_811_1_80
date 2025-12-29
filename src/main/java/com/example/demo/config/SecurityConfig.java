@@ -28,13 +28,13 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // FIX: Define the PasswordEncoder bean required by AuthController
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // FIX: Link PasswordEncoder and UserDetailsService
+    
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
