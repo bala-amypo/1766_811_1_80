@@ -1,4 +1,4 @@
-package com.example.demo.security; // Change this to security
+package com.example.demo.security; 
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,12 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authHeader.substring(7);
-        final String userEmail = jwtUtil.extractUsername(jwt); // Matches method in JwtUtil
+        final String userEmail = jwtUtil.extractUsername(jwt); 
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-            if (jwtUtil.isTokenValid(jwt, userDetails.getUsername())) { // Matches method in JwtUtil
+            if (jwtUtil.isTokenValid(jwt, userDetails.getUsername())) { 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
