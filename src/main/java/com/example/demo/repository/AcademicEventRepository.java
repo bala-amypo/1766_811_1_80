@@ -13,7 +13,7 @@ public interface AcademicEventRepository extends JpaRepository<AcademicEvent, Lo
     List<AcademicEvent> findByBranchId(Long branchId);
     List<AcademicEvent> findByEventType(String eventType);
     
-    // Corrected range logic for test t86 to ensure boundaries are inclusive
+    
     @Query("SELECT e FROM AcademicEvent e WHERE e.startDate <= :end AND e.endDate >= :start")
     List<AcademicEvent> findEventsInRange(@Param("start") LocalDate start, @Param("end") LocalDate end);
 }
