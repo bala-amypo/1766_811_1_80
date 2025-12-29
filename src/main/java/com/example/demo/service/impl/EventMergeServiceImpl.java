@@ -167,7 +167,7 @@ public EventMergeRecord mergeEvents(List<Long> eventIds, String reason) {
     // FIX FOR t81: Ensure the specific event exists
     for (Long id : eventIds) {
         if (!academicEventRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Event not found );
+            throw new ResourceNotFoundException("Event not found with id: " +id);
         }
     }
 
